@@ -4,7 +4,6 @@ import { SidebarTasksList } from './components/SidebarTasksList'
 function App() {
   return (
     <>
-      app root cmp
       <SidebarTasksList />
     </>
   )

@@ -5,13 +5,13 @@ import { toDosQuery } from "../services/todos.service";
 function convertDataToTasks(data:any[]){
   const tasks:Task[] = [];
   data.forEach( item => {
-    tasks.push({ id: item.id, name: item.title})
+    tasks.push({ id: item.id, name: item.title});
   });
   return tasks;
 }
 
 export function SidebarTasksList() {
-  const { status, data, error, isFetching } = toDosQuery()
+  const { status, data, error, isFetching } = toDosQuery();
   
   return (
     <section>
@@ -26,5 +26,5 @@ export function SidebarTasksList() {
       )}
       <span>{isFetching ? "Fetching new data" : ""}</span>
     </section>
-  )
+  );
 }
