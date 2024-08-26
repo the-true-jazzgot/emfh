@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Task } from "../types";
+import { EMCategory, Task } from "../types";
 
 interface JsonPlaceholderTask {
   userId: number;
@@ -14,11 +14,11 @@ const todosApi = axios.create({
 });
 
 function convertRawDataToTasks(data:JsonPlaceholderTask[]):Task[] {
-  return data.map(item => ({ id: item.id, name: item.title })) as Task[];
+  return data.map(item => ({ id: item.id, name: item.title, category: EMCategory.uncategorized })) as Task[];
 };
 
 const getTodos = async () => {
-  const response = await todosApi.get("");
+  const response = await todosApi.get<JsonPlaceholderTask[]>("");
   return convertRawDataToTasks(response.data);
 };
 
