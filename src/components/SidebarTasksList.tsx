@@ -2,14 +2,6 @@ import { Task } from "../types";
 import { TaskLabel } from "./TaskLabel";
 import { toDosQuery } from "../services/todos.service";
 
-function convertDataToTasks(data:any[]){
-  const tasks:Task[] = [];
-  data.forEach( item => {
-    tasks.push({ id: item.id, name: item.title});
-  });
-  return tasks;
-}
-
 export function SidebarTasksList() {
   const { status, data, error, isFetching } = toDosQuery();
   
@@ -20,7 +12,7 @@ export function SidebarTasksList() {
       ) : status === 'error' ? (
         <span>Error: {error.message}</span>
       ) : (
-        convertDataToTasks(data).map( task => (
+        data.map( (task: Task) => (
           <TaskLabel task={task} key={task.id}/>
         ))
       )}
