@@ -1,12 +1,12 @@
 import './App.css'
-import { SidebarTasksList } from './features/SidebarTasksList'
+import { SidebarTasksList } from './components/SidebarTasksList'
 
 function App() {
   return (
-    <div>
+    <>
       app root cmp
       <SidebarTasksList />
-    </div>
+    </>
   )
 }
 
