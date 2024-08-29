@@ -8,8 +8,14 @@ export const enum EMCategory {
 
 // export type EMCategory = "uncategorized" | "q1" | "q2" | "q3" | "q4";
 
-export type Task = {
+export type Task = = {
     id: number, 
     name: string,
     category: EMCategory
+}
+
+export type AuthData = {
+    id: string,
+    apiToken: string,
+    username: string
 }
