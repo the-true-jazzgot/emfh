@@ -1,13 +1,14 @@
 import './App.css'
+import { LoginForm } from './components/LoginForm'
 import { SidebarTasksList } from './components/SidebarTasksList'
 
 function App() {
   return (
     <>
-      app root cmp
+      <LoginForm />
       <SidebarTasksList />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
