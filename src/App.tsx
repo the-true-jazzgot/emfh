@@ -6,7 +6,7 @@ import { SidebarTasksList } from './components/SidebarTasksList'
 function App() {
 
   return (
-    <div className='grid grid-cols-5 grid-rows-11 gap-4 inset-0 absolute'>
+    <div className='grid grid-cols-5 grid-rows-11 gap-4 inset-0 m-0 p-0'>
       <LoginForm />
       <SidebarTasksList />
       <Quadrant quadrant={"q1"} />
