@@ -43,7 +43,7 @@ interface TaskListContract {
 const axiosInstance:AxiosInstance = axios.create();
 
 function convertRawDataToTasks(data:any):Task[] {
-  return data.data.map((item: { id: any; text: any; }) => ({ id: item.id, name: item.text, category: EMCategory.uncategorized })) as Task[];
+  return data.data.map((item: { id: any; text: any; }) => ({ id: item.id, name: item.text, category: "uncategorized" })) as Task[];
 };
 
 const getTodos = async ():Promise<Task[]> => {
