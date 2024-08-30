@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosInstance } from "axios";
-import { AuthData, Task, TaskType } from "../types";
+import { AuthData, EMCategory, Task, TaskType } from "../types";
 import { getGetRequestSettings } from "./authentification.service";
 
 interface ChecklistContract {
@@ -41,6 +41,9 @@ interface TaskListContract {
   data:any[],
   notifications:any[]
 }
+
+const authError = new Error("User not logged in");
+
 const axiosInstance:AxiosInstance = axios.create();
 
 function convertRawDataToTasks(data:any):Task[] {
@@ -52,8 +55,8 @@ const getTodos = async (authData:AuthData):Promise<Task[]> => {
     const response = await axiosInstance.get<any[]>("/tasks/user", getGetRequestSettings(authData));
     return convertRawDataToTasks(response.data);
   } else {
-    new Error("User not logged in!");
-    return [];
+    // throw authError;
+    return [] as Task[];
   };
 };
 
@@ -65,16 +68,21 @@ export function toDosQuery() {
     return useQuery({
       queryKey: ['todos'], 
       queryFn:  async () => await getTodos(authData),
-      enabled: true
+      enabled: true,
+      initialData: [] as Task[]
     });
   }
-  
+
   return useQuery({
-    queryKey: ["todos"],
-    queryFn:  ():Task[] => [],
+    queryKey: ['todos'], 
+    queryFn:  () => [] as Task[],
     enabled: false
   });
 };
+
+export const filterData = (category:EMCategory, allTasks:Task[]):Task[] => {
+  return allTasks?.filter(item => item.category === category) || [] as Task[];
+}
 
 let exampleData = {
   "success":true,
