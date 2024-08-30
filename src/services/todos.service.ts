@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosInstance } from "axios";
-import { EMCategory, Task, TaskType } from "../types";
+import { AuthData, Task, TaskType } from "../types";
 import { getGetRequestSettings } from "./authentification.service";
 
 interface ChecklistContract {
@@ -10,6 +10,7 @@ interface ChecklistContract {
 };
 
 type Attribute = "habit" | "daily" | "todo" | "reward";
+
 interface TaskContract {
   _id: string,
   userId: string,
@@ -46,17 +47,31 @@ function convertRawDataToTasks(data:any):Task[] {
   return data.data.map((item: { id: any; text: any; }) => ({ id: item.id, name: item.text, category: "uncategorized" })) as Task[];
 };
 
-const getTodos = async ():Promise<Task[]> => {
-  const response = await axiosInstance.get<any[]>("/tasks/user", getGetRequestSettings());
-  return convertRawDataToTasks(response.data);
+const getTodos = async (authData:AuthData):Promise<Task[]> => {
+  if (authData) {
+    const response = await axiosInstance.get<any[]>("/tasks/user", getGetRequestSettings(authData));
+    return convertRawDataToTasks(response.data);
+  } else {
+    new Error("User not logged in!");
+    return [];
+  };
 };
 
 export function toDosQuery() {
   const queryClient = useQueryClient();
-
+  const authData:AuthData | undefined = queryClient.getQueryData(['authData']);
+  
+  if(authData) {
+    return useQuery({
+      queryKey: ['todos'], 
+      queryFn:  async () => await getTodos(authData),
+      enabled: true
+    });
+  }
+  
   return useQuery({
-    queryKey: ['todos'], 
-    queryFn:  async () => await getTodos(), 
+    queryKey: ["todos"],
+    queryFn:  ():Task[] => [],
     enabled: false
   });
 };
@@ -142,4 +157,8 @@ let exampleData = {
     "id":"84c2e874-a8c9-4673-bd31-d97a1a42e9a3"
   }],
   "notifications":[]
+}
+
+function reject(arg0: Error) {
+  throw new Error("Function not implemented.");
 }
