@@ -17,12 +17,14 @@ export function LoginForm() {
 
   return (
     <form className={isSuccess ? "js-loggedIn" : "js-anonymous"}>
+    <form className={isSuccess ? "js-loggedIn" : "js-anonymous"}>
       <label htmlFor="email">
         <input type="email" name="email" id="email"></input>
       </label>
       <label htmlFor="password">
         <input type="password" name="password" id="password"></input>
       </label>
+      <button type="submit" className="" onClick={ (e)=> {handleLogin(e)}}>{isSuccess ? "Logout" : "Login"}</button>
       <button type="submit" className="" onClick={ (e)=> {handleLogin(e)}}>{isSuccess ? "Logout" : "Login"}</button>
       <span>{isSuccess ? `${data.username}` : ""}</span>
     </form>
