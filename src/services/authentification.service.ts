@@ -33,7 +33,6 @@ function parseResponse(response:LoginDataContract):AuthData{
 const getAuthenticationData = async (userCredentials:UserCredentials):Promise<AuthData> => {
   const response = await axiosInstance.post<LoginDataContract>("/user/auth/local/login", {...userCredentials});
   tempAuthData = parseResponse(response.data); //temporary workaround
-  console.log(tempAuthData);
   return parseResponse(response.data);
 }
 
@@ -47,14 +46,6 @@ export function useCredentialData() {
 };
 
 export function getGetRequestSettings(authData:AuthData = tempAuthData):AxiosRequestConfig {
-  console.log({
-    baseURL: habiticaAPIconf.baseURL,
-    headers: {
-      ...habiticaAPIconf.headers,
-      'x-api-user' : authData?.id, 
-      'x-api-key' : authData?.apiToken
-    }
-  });
   if (authData) return {
     baseURL: habiticaAPIconf.baseURL,
     headers: {
