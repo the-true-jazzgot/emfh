@@ -18,7 +18,7 @@ interface LoginDataContract {
   success: boolean
 };
 
-const axiosInstance = axios.create({...habiticaAPIconf});
+const axiosInstance = axios.create(habiticaAPIconf);
 
 function parseResponse(response:LoginDataContract):AuthData{
   return {
@@ -29,7 +29,7 @@ function parseResponse(response:LoginDataContract):AuthData{
 }
 
 const getAuthenticationData = async (userCredentials:UserCredentials):Promise<AuthData> => {
-  const response = await axiosInstance.post<LoginDataContract>("/user/auth/local/login", {username: userCredentials.username, password: userCredentials.password});
+  const response = await axiosInstance.post<LoginDataContract>("/user/auth/local/login", {...userCredentials});
   return parseResponse(response.data);
 }
 
