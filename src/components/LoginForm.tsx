@@ -1,8 +1,10 @@
 import { MouseEvent } from "react";
 import { useCredentialData } from "../services/authentification.service";
+import { toDosQuery } from "../services/todos.service";
 
 export function LoginForm() {
   const { mutate, isSuccess, data } = useCredentialData();
+  const { refetch } = toDosQuery();
 
   function handleLogin(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
     e.preventDefault();
@@ -10,6 +12,7 @@ export function LoginForm() {
       username: (document.getElementById("email") as HTMLInputElement).value,
       password: (document.getElementById("password") as HTMLInputElement).value
     });
+    refetch();
   }
 
   return (
