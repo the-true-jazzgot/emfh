@@ -8,7 +8,9 @@ export const enum EMCategory {
 
 // export type EMCategory = "uncategorized" | "q1" | "q2" | "q3" | "q4";
 
-export type Task = = {
+export type TaskType = "habit" | "daily" | "todo" | "reward";
+
+export type Task = {
     id: number, 
     name: string,
     category: EMCategory

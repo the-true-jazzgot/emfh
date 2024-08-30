@@ -1,9 +1,11 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Task } from "../types";
 import { TaskLabel } from "./TaskLabel";
 import { toDosQuery } from "../services/todos.service";
 
 export function SidebarTasksList() {
-  const { status, data, error, isFetching } = toDosQuery();
+  const queryClient = useQueryClient();
+  const { status, data, error, isFetching, refetch } = toDosQuery();
   
   return (
     <section>
@@ -17,6 +19,8 @@ export function SidebarTasksList() {
         ))
       )}
       <span>{isFetching ? "Fetching new data" : ""}</span>
+      <button onClick={ ()=> {console.log(data);refetch()}
+      }>CLICK</button>
     </section>
   );
 }
