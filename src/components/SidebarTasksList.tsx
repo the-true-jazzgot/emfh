@@ -1,30 +1,26 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Task } from "../types";
 import { TaskLabel } from "./TaskLabel";
 import { toDosQuery } from "../services/todos.service";
 
-function convertDataToTasks(data:any[]){
-  const tasks:Task[] = [];
-  data.forEach( item => {
-    tasks.push({ id: item.id, name: item.title})
-  });
-  return tasks;
-}
-
 export function SidebarTasksList() {
-  const { status, data, error, isFetching } = toDosQuery()
+  const queryClient = useQueryClient();
+  const { status, data, error, isFetching, refetch } = toDosQuery();
   
   return (
-    <section>
+    <section className="col-span-1 row-span-10">
       {status === 'pending' ? (
         'Loading...'
       ) : status === 'error' ? (
         <span>Error: {error.message}</span>
       ) : (
-        convertDataToTasks(data).map( task => (
+        data.map( (task: Task) => (
           <TaskLabel task={task} key={task.id}/>
         ))
       )}
       <span>{isFetching ? "Fetching new data" : ""}</span>
+      <button onClick={ ()=> {console.log(data);refetch()}
+      }>CLICK</button>
     </section>
-  )
+  );
 }

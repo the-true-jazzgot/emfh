@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig, CreateAxiosDefaults } from "axios";
 import { habiticaAPIconf } from "../config/APIconfig";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AuthData } from "../types";
@@ -18,7 +18,8 @@ interface LoginDataContract {
   success: boolean
 };
 
-const axiosInstance = axios.create(habiticaAPIconf);
+const axiosInstance = axios.create({...habiticaAPIconf});
+export let tempAuthData:AuthData;
 
 function parseResponse(response:LoginDataContract):AuthData{
   return {
@@ -30,6 +31,7 @@ function parseResponse(response:LoginDataContract):AuthData{
 
 const getAuthenticationData = async (userCredentials:UserCredentials):Promise<AuthData> => {
   const response = await axiosInstance.post<LoginDataContract>("/user/auth/local/login", {...userCredentials});
+  tempAuthData = parseResponse(response.data); //temporary workaround
   return parseResponse(response.data);
 }
 
@@ -37,7 +39,28 @@ export function useCredentialData() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (loginData:UserCredentials) => getAuthenticationData(loginData),
+    mutationFn: (loginData:UserCredentials):Promise<AuthData> => getAuthenticationData(loginData),
     mutationKey: ['authData']
   });
+};
+
+export function getGetRequestSettings(authData:AuthData = tempAuthData):AxiosRequestConfig {
+  console.log({
+    baseURL: habiticaAPIconf.baseURL,
+    headers: {
+      ...habiticaAPIconf.headers,
+      'x-api-user' : authData?.id, 
+      'x-api-key' : authData?.apiToken
+    }
+  });
+  if (authData) return {
+    baseURL: habiticaAPIconf.baseURL,
+    headers: {
+      ...habiticaAPIconf.headers,
+      'x-api-user' : authData?.id, 
+      'x-api-key' : authData?.apiToken
+    }
+  };
+  
+  return habiticaAPIconf;
 }
