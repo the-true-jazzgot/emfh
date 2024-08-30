@@ -8,7 +8,7 @@ export function SidebarTasksList() {
   const { status, data, error, isFetching, refetch } = toDosQuery();
   
   return (
-    <section>
+    <section className="col-span-1 row-span-10">
       {status === 'pending' ? (
         'Loading...'
       ) : status === 'error' ? (

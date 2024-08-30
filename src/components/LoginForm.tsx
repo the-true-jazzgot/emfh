@@ -14,15 +14,17 @@ export function LoginForm() {
   }
 
   return (
-    <form>
-      <label htmlFor="email">
-        <input type="email" name="email" id="email"></input>
-      </label>
-      <label htmlFor="password">
-        <input type="password" name="password" id="password"></input>
-      </label>
-      <button type="submit" onClick={ (e)=> {handleLogin(e)}}>Login</button>
-      <span>{isSuccess ? `${data.username}` : ""}</span>
-    </form>
+    <header className={"col-span-5 row-span-1" + (isSuccess? ' b':' a')}>
+      <form>
+        <label htmlFor="email">
+          <input type="email" name="email" id="email"></input>
+        </label>
+        <label htmlFor="password">
+          <input type="password" name="password" id="password"></input>
+        </label>
+        <button type="submit" onClick={ (e)=> {handleLogin(e)}}>Login</button>
+        <span>{isSuccess ? `${data.username}` : ""}</span>
+      </form>
+    </header>
   )
 }
