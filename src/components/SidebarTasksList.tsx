@@ -19,7 +19,7 @@ export function SidebarTasksList() {
         ))
       )}
       <span>{isFetching ? "Fetching new data" : ""}</span>
-      <button onClick={ ()=> {console.log(data);refetch()}
+      <button onClick={ ()=> {refetch()}
       }>CLICK</button>
     </section>
   );

@@ -48,7 +48,6 @@ function convertRawDataToTasks(data:any):Task[] {
 
 const getTodos = async ():Promise<Task[]> => {
   const response = await axiosInstance.get<any[]>("/tasks/user", getGetRequestSettings());
-  console.log(convertRawDataToTasks(response.data));
   return convertRawDataToTasks(response.data);
 };
 

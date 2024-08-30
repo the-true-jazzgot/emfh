@@ -10,7 +10,6 @@ export function LoginForm() {
       username: (document.getElementById("email") as HTMLInputElement).value,
       password: (document.getElementById("password") as HTMLInputElement).value
     });
-    console.log(data);
   }
 
   return (
