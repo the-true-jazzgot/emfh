@@ -1,14 +1,14 @@
-import { Task } from "../types";
+import { EMCategory, Task } from "../types";
 import { TaskLabel } from "./TaskLabel";
 import { useDroppable } from "@dnd-kit/core";
 
 export function SidebarTasksList({tasks}:{tasks:Task[]}) {
   const {setNodeRef} = useDroppable({
-    id: "sidebar"
+    id: "uncategorized"
   });
 
   return (
-    <section className="col-span-1 row-span-10" ref={setNodeRef}>
+    <section id={"uncategorized" as EMCategory} className="col-span-1 row-span-10" ref={setNodeRef}>
       <h2>{!!tasks ? tasks[0]?.name : "No tasks passed"}</h2>
       { tasks.length > 0 ?
         tasks.map( (task: Task) => (

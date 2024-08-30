@@ -16,7 +16,36 @@ function App() {
   const [q3Items, setQ3Items] = useState([] as Task[]);
   const [q4Items, setQ4Items] = useState([] as Task[]);
 
+  const categoryStates = {
+    uncategorized: {
+      id: "uncategorized" as EMCategory,
+      readState: uncategorizedItems as Task[],                                                     
+      setState: setUncategorizedItems as React.Dispatch<React.SetStateAction<Task[]>>
+    },
+    q1: {
+      id: "q1" as EMCategory,
+      readState: q1Items as Task[],                          
+      setState: setQ1Items as React.Dispatch<React.SetStateAction<Task[]>>
+    },
+    q2: {
+      id: "q2" as EMCategory,
+      readState: q2Items as Task[],                          
+      setState: setQ2Items as React.Dispatch<React.SetStateAction<Task[]>>
+    },
+    q3: {
+      id: "q3" as EMCategory,
+      readState: q3Items as Task[],                          
+      setState: setQ3Items as React.Dispatch<React.SetStateAction<Task[]>>
+    },
+    q4: {
+      id: "q4" as EMCategory,
+      readState: q4Items as Task[],                          
+      setState: setQ4Items as React.Dispatch<React.SetStateAction<Task[]>>
+    }
+  }
+
   //TODO: move to separate function in todos.service
+  //TODO: check if useEffect is properly called in case of refetch
   useEffect(() => {if(isSuccess) { 
     let tasks;
     allTasks == undefined ? tasks = [] as Task[]: tasks = allTasks;
@@ -27,60 +56,24 @@ function App() {
     setQ4Items(filterData("q4", tasks));
   }}, [allTasks]);
 
+  //TODO: move to separate function in todos.service
   const addTaskToComponent = (e: DragEndEvent) => {
     const taskId: string = e.active.id.toString();
     const task: HTMLElement | null = document.getElementById(taskId);
 
     if(e.over?.id && !!task) {
-      console.log(taskId);
-      console.log(e.over?.id);
-
       const currCategory:EMCategory = task.dataset.category as EMCategory || "uncategorized";
       const newCategory: EMCategory = e.over?.id as EMCategory;
-      let taskToMove: Task | undefined;
 
-      switch (currCategory) {
-        case "uncategorized":
-          taskToMove = uncategorizedItems.find(item => item.id === taskId);
-          setUncategorizedItems(uncategorizedItems.filter(item => item !== taskToMove));
-          break;
-        case "q1":
-          taskToMove = q1Items.find(item => item.id === taskId);
-          setQ1Items(q1Items.filter(item => item !== taskToMove));
-          break;
-        case "q2":
-          taskToMove = q2Items.find(item => item.id === taskId);
-          setQ2Items(q2Items.filter(item => item !== taskToMove));
-          break;
-        case "q3":
-          taskToMove = q3Items.find(item => item.id === taskId);
-          setQ3Items(q3Items.filter(item => item !== taskToMove));
-          break;
-        case "q4":
-          taskToMove = q4Items.find(item => item.id === taskId);
-          setQ4Items(q4Items.filter(item => item !== taskToMove));
-      }
+      const currCatState = categoryStates[currCategory];
+      const newCatState = categoryStates[newCategory];
 
-      switch (newCategory) {
-        case "uncategorized":
-          taskToMove.category = "uncategorized";
-          setUncategorizedItems([...uncategorizedItems,taskToMove]);
-          break;
-        case "q1":
-          taskToMove.category = "q1";
-          setQ1Items([...q1Items,taskToMove]);
-          break;
-        case "q2":
-          taskToMove.category = "q2";
-          setQ2Items([...q2Items,taskToMove]);
-          break;
-        case "q3":
-          taskToMove.category = "q3";
-          setQ3Items([...q3Items,taskToMove]);
-          break;
-        case "q4":
-          taskToMove.category = "q4";
-          setQ4Items([...q4Items,taskToMove]);
+      const taskToMove: Task | undefined = currCatState.readState.find(item => item.id === taskId);
+      if(!!taskToMove) {
+        currCatState.setState(currCatState.readState.filter(item => item !== taskToMove));
+        console.log(newCatState.id);
+        taskToMove.category = newCatState.id;
+        newCatState.setState([...newCatState.readState,taskToMove]);
       }
     }
   };
