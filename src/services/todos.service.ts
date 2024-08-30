@@ -42,8 +42,6 @@ interface TaskListContract {
   notifications:any[]
 }
 
-const authError = new Error("User not logged in");
-
 const axiosInstance:AxiosInstance = axios.create();
 
 function convertRawDataToTasks(data:any):Task[] {
@@ -165,8 +163,4 @@ let exampleData = {
     "id":"84c2e874-a8c9-4673-bd31-d97a1a42e9a3"
   }],
   "notifications":[]
-}
-
-function reject(arg0: Error) {
-  throw new Error("Function not implemented.");
 }
