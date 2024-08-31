@@ -64,7 +64,7 @@ function App() {
     if(e.over?.id && !!task) {
       const currCategory:EMCategory = task.dataset.category as EMCategory || "uncategorized";
       const newCategory: EMCategory = e.over?.id as EMCategory;
-
+      if(newCategory === currCategory) return;
       const currCatState = categoryStates[currCategory];
       const newCatState = categoryStates[newCategory];
 
