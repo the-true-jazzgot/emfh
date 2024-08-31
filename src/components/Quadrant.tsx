@@ -8,7 +8,7 @@ export function Quadrant({quadrant, tasks}:{quadrant: EMCategory, tasks: Task[]}
   });
 
   return (
-    <section id={quadrant} ref={setNodeRef} className={"js-" + quadrant + " col-span-2 row-span-5 rounded bg-habibg p-2"} >
+    <section id={quadrant} ref={setNodeRef} className={"js-" + quadrant + " col-span-2 row-span-5 rounded bg-container p-2"} >
       { tasks.length > 0 ?
         tasks.map( (task: Task) => (
           <TaskLabel task={task} key={task.id}/>

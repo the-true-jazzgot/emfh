@@ -8,7 +8,7 @@ export function SidebarTasksList({tasks}:{tasks:Task[]}) {
   });
 
   return (
-    <section id={"uncategorized" as EMCategory} className="col-span-1 row-span-10 bg-habibg" ref={setNodeRef}>
+    <section id={"uncategorized" as EMCategory} className="col-span-1 row-span-10 bg-container" ref={setNodeRef}>
       { tasks.length > 0 ?
         tasks.map( (task: Task) => (
           <TaskLabel task={task} key={task.id}/>

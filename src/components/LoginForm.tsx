@@ -2,6 +2,7 @@ import { MouseEvent } from "react";
 import { useCredentialData } from "../services/authentification.service";
 import { toDosQuery } from "../services/tasks.service";
 import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "./ui_elements/Button";
 
 export function LoginForm() {
   const { mutate, isSuccess, data, status } = useCredentialData();
@@ -27,7 +28,7 @@ export function LoginForm() {
       <form className={isSuccess ? "js-loggedIn" : "js-anonymous"}>
       {status === "success" ? <>
         <span className="font-bold mx-4">{data.username}</span>
-        <button type="reset" className="p-2 px-4 text-white bg-green-900 rounded-full" onClick={ ()=> {handleLogout()}}>Logout</button>
+        <Button text={"Logout"} fn={handleLogout} type="reset"/>
       </>:<>
         <label htmlFor="email">
           <input type="email" name="email" id="email"></input>
@@ -35,7 +36,7 @@ export function LoginForm() {
         <label htmlFor="password">
           <input type="password" name="password" id="password"></input>
         </label>
-        <button type="submit" className="p-2 px-4 text-white bg-green-900 rounded-full" onClick={ (e)=> {handleLogin(e)}}>Login</button>
+        <Button text="Submit" fn={(e)=> {handleLogin(e)}} type="submit" />
       </>}
       </form>
     </header>
