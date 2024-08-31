@@ -1,6 +1,6 @@
 import { MouseEvent } from "react";
 import { useCredentialData } from "../services/authentification.service";
-import { toDosQuery } from "../services/todos.service";
+import { toDosQuery } from "../services/tasks.service";
 import { useQueryClient } from "@tanstack/react-query";
 
 export function LoginForm() {

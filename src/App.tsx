@@ -4,8 +4,8 @@ import { Quadrant } from './components/Quadrant';
 import { SidebarTasksList } from './components/SidebarTasksList'
 import { useEffect, useState } from 'react';
 import { EMCategory, Task } from './types';
-import { filterData, toDosQuery } from './services/todos.service';
-import { Assistant } from './components/Assistant';
+import { filterData, toDosQuery } from './services/tasks.service';
+import { AssistantContainer } from './components/Assistant/AssistantContainer';
 
 function App() {
   const { data: allTasks, isSuccess } = toDosQuery();
@@ -88,7 +88,7 @@ function App() {
         <Quadrant quadrant={"q3"} tasks={q3Items} />
         <Quadrant quadrant={"q4"} tasks={q4Items} />
       </DndContext>
-      <Assistant tasks={allTasks || [] as Task[]} />
+      <AssistantContainer quadrant={'uncategorized'} tasks={[]} />
     </div>
   );
 }
