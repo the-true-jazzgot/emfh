@@ -10,11 +10,6 @@ import { Assistant } from './components/Assistant';
 function App() {
   const { data: allTasks, isSuccess } = toDosQuery();
 
-  function getTaskList():Task[] {
-    if(!!allTasks) return allTasks; 
-    return [] as Task[];
-  }
-
   const [uncategorizedItems, setUncategorizedItems] = useState([] as Task[]);
   const [q1Items, setQ1Items] = useState([] as Task[]);
   const [q2Items, setQ2Items] = useState([] as Task[]);
@@ -52,7 +47,8 @@ function App() {
   //TODO: move to separate function in todos.service
   //TODO: check if useEffect is properly called in case of refetch
   useEffect(() => {if(isSuccess) { 
-    let tasks:Task[] = getTaskList();
+    let tasks;
+    allTasks == undefined ? tasks = [] as Task[]: tasks = allTasks;
     setUncategorizedItems(filterData("uncategorized", tasks));
     setQ1Items(filterData("q1", tasks));
     setQ2Items(filterData("q2", tasks));
@@ -92,7 +88,7 @@ function App() {
         <Quadrant quadrant={"q3"} tasks={q3Items} />
         <Quadrant quadrant={"q4"} tasks={q4Items} />
       </DndContext>
-      <Assistant tasks={allTasks || getTaskList()} />
+      <Assistant tasks={allTasks || [] as Task[]} />
     </div>
   );
 }
