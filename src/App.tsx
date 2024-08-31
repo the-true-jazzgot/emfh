@@ -1,14 +1,19 @@
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
-import './App.css'
-import { LoginForm } from './components/LoginForm'
+import { LoginForm } from './components/LoginForm';
 import { Quadrant } from './components/Quadrant';
 import { SidebarTasksList } from './components/SidebarTasksList'
 import { useEffect, useState } from 'react';
 import { EMCategory, Task } from './types';
 import { filterData, toDosQuery } from './services/todos.service';
+import { Assistant } from './components/Assistant';
 
 function App() {
   const { data: allTasks, isSuccess } = toDosQuery();
+
+  function getTaskList():Task[] {
+    if(!!allTasks) return allTasks; 
+    return [] as Task[];
+  }
 
   const [uncategorizedItems, setUncategorizedItems] = useState([] as Task[]);
   const [q1Items, setQ1Items] = useState([] as Task[]);
@@ -47,8 +52,7 @@ function App() {
   //TODO: move to separate function in todos.service
   //TODO: check if useEffect is properly called in case of refetch
   useEffect(() => {if(isSuccess) { 
-    let tasks;
-    allTasks == undefined ? tasks = [] as Task[]: tasks = allTasks;
+    let tasks:Task[] = getTaskList();
     setUncategorizedItems(filterData("uncategorized", tasks));
     setQ1Items(filterData("q1", tasks));
     setQ2Items(filterData("q2", tasks));
@@ -88,6 +92,7 @@ function App() {
         <Quadrant quadrant={"q3"} tasks={q3Items} />
         <Quadrant quadrant={"q4"} tasks={q4Items} />
       </DndContext>
+      <Assistant tasks={allTasks || getTaskList()} />
     </div>
   );
 }
