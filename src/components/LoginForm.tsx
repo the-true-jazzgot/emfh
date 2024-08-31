@@ -23,19 +23,21 @@ export function LoginForm() {
   }
 
   return (
-    <form className={isSuccess ? "js-loggedIn" : "js-anonymous"}>
-    {status === "success" ? <>
-      <span className="font-bold mx-4">{data.username}</span>
-      <button type="reset" className="p-2 px-4 text-white bg-green-900 rounded-full" onClick={ ()=> {handleLogout()}}>Logout</button>
-    </>:<>
-      <label htmlFor="email">
-        <input type="email" name="email" id="email"></input>
-      </label>  
-      <label htmlFor="password">
-        <input type="password" name="password" id="password"></input>
-      </label>
-      <button type="submit" className="p-2 px-4 text-white bg-green-900 rounded-full" onClick={ (e)=> {handleLogin(e)}}>Login</button>
-    </>}
-    </form>
+    <header className={"col-span-5 row-span-1" + (isSuccess? ' b':' a')}>
+      <form className={isSuccess ? "js-loggedIn" : "js-anonymous"}>
+      {status === "success" ? <>
+        <span className="font-bold mx-4">{data.username}</span>
+        <button type="reset" className="p-2 px-4 text-white bg-green-900 rounded-full" onClick={ ()=> {handleLogout()}}>Logout</button>
+      </>:<>
+        <label htmlFor="email">
+          <input type="email" name="email" id="email"></input>
+        </label>  
+        <label htmlFor="password">
+          <input type="password" name="password" id="password"></input>
+        </label>
+        <button type="submit" className="p-2 px-4 text-white bg-green-900 rounded-full" onClick={ (e)=> {handleLogin(e)}}>Login</button>
+      </>}
+      </form>
+    </header>
   )
 }
