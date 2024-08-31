@@ -6,6 +6,11 @@ export default {
   ],
   theme: {
     extend: {},
+    colors: {
+      'habibg' : '#edecee',
+      'habitxt': '#4e4a57',
+      'white':'#ffffff'
+    },
   },
   plugins: [],
 }

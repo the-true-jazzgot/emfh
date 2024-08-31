@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 export function LoginForm() {
   const { mutate, isSuccess, data, status } = useCredentialData();
   const { refetch, data:elo } = toDosQuery();
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient(); //handle logout
 
   function handleLogin(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
     e.preventDefault();
