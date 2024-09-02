@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { EMCategory, Task } from './types';
 import { filterData, toDosQuery } from './services/tasks.service';
 import { AssistantContainer } from './components/Assistant/AssistantContainer';
+import { Controls } from './components/Controls';
 
 function App() {
   const { data: allTasks, isSuccess } = toDosQuery();
@@ -79,7 +80,7 @@ function App() {
   };
 
   return (
-    <div className='grid grid-cols-5 grid-rows-11 gap-4 inset-0 m-0 p-0'>
+    <div className='grid grid-cols-5 grid-rows-12 gap-4 inset-0 m-0 p-0'>
       <LoginForm />
       <DndContext onDragEnd={addTaskToComponent}>
         <SidebarTasksList tasks={uncategorizedItems} />
@@ -89,6 +90,7 @@ function App() {
         <Quadrant quadrant={"q4"} tasks={q4Items} />
       </DndContext>
       <AssistantContainer quadrant={'uncategorized'} tasks={[]} />
+      <Controls q1={q1Items} q2={q2Items} q3={q3Items} q4={q4Items} />
     </div>
   );
 }
