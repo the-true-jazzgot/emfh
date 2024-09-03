@@ -72,7 +72,6 @@ function App() {
       const taskToMove: Task | undefined = currCatState.readState.find(item => item.id === taskId);
       if(!!taskToMove) {
         currCatState.setState(currCatState.readState.filter(item => item !== taskToMove));
-        console.log(newCatState.id);
         taskToMove.category = newCatState.id;
         newCatState.setState([...newCatState.readState,taskToMove]);
       }
@@ -89,7 +88,7 @@ function App() {
         <Quadrant quadrant={"q3"} tasks={q3Items} />
         <Quadrant quadrant={"q4"} tasks={q4Items} />
       </DndContext>
-      <AssistantContainer quadrant={'uncategorized'} tasks={[]} />
+      <AssistantContainer />
       <Controls q1={q1Items} q2={q2Items} q3={q3Items} q4={q4Items} />
     </div>
   );
