@@ -19,8 +19,7 @@ export function SidebarTasksList() {
   });
 
   return (
-    <section id={"uncategorized" as EMCategory} className="col-span-1 row-span-10" ref={setNodeRef}>
-      <h2>{!!tasks ? tasks[0]?.name : "No tasks passed"}</h2>
+    <section id={"uncategorized" as EMCategory} className="col-span-1 row-span-10 bg-container" ref={setNodeRef}>
       { tasks.length > 0 ?
         tasks.map( (task: Task) => (
           <TaskLabel task={task} key={task.id}/>

@@ -12,7 +12,7 @@ export function TaskLabel({task}:{task:Task}) {
   };
 
   return (
-    <article id={task.id} data-category={task.category as EMCategory} className="rounded border-2 border-indigo-700 bg-indigo-400 text-white font-bold my-2 p-2 text-sm" ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <article id={task.id} data-category={task.category as EMCategory} className="rounded bg-white font-bold my-2 p-2 text-sm text-habitxt" ref={setNodeRef} style={style} {...listeners} {...attributes}>
       { task.name }
     </article>
   )
