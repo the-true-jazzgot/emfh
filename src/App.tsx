@@ -1,5 +1,4 @@
 import { DndContext } from '@dnd-kit/core';
-import './App.css'
 import { LoginForm } from './components/LoginForm'
 import { Quadrant } from './components/Quadrant';
 import { SidebarTasksList } from './components/SidebarTasksList'

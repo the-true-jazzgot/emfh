@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { filterData, toDosQuery } from "../services/todos.service";
+import { filterData, toDosQuery } from "../services/tasks.service";
 import { EMCategory, Task } from "../types";
 import { TaskLabel } from "./TaskLabel";
 import { useDroppable } from "@dnd-kit/core";
