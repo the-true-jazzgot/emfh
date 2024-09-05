@@ -2,7 +2,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { EMCategory, Task } from "../types";
 import { TaskLabel } from "./TaskLabel";
 import { useEffect, useState } from "react";
-import { filterData, toDosQuery } from "../services/todos.service";
+import { filterData, toDosQuery } from "../services/tasks.service";
 
 export function Quadrant({quadrant}:{quadrant: EMCategory}) {
   const { data, isSuccess } = toDosQuery()
