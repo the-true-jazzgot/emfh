@@ -1,8 +1,19 @@
 import { useDroppable } from "@dnd-kit/core";
 import { EMCategory, Task } from "../types";
 import { TaskLabel } from "./TaskLabel";
+import { useEffect, useState } from "react";
+import { filterData, toDosQuery } from "../services/todos.service";
 
-export function Quadrant({quadrant, tasks}:{quadrant: EMCategory, tasks: Task[]}) {
+export function Quadrant({quadrant}:{quadrant: EMCategory}) {
+  const { data, isSuccess } = toDosQuery()
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  useEffect(()=>{
+    isSuccess?
+    setTasks(filterData(quadrant, data)):
+    setTasks([] as Task[])
+  }, [data]);
+
   const {setNodeRef} = useDroppable({
     id: quadrant
   });

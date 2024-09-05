@@ -1,8 +1,19 @@
+import { useEffect, useState } from "react";
+import { filterData, toDosQuery } from "../services/todos.service";
 import { EMCategory, Task } from "../types";
 import { TaskLabel } from "./TaskLabel";
 import { useDroppable } from "@dnd-kit/core";
 
-export function SidebarTasksList({tasks}:{tasks:Task[]}) {
+export function SidebarTasksList() {
+  const { data, isSuccess } = toDosQuery();
+  const [tasks, setTasks] = useState<Task[]>([]);
+  
+  useEffect(()=>{
+    isSuccess?
+    setTasks(filterData("uncategorized", data)):
+    setTasks([] as Task[])
+  }, [data]);
+
   const {setNodeRef} = useDroppable({
     id: "uncategorized"
   });
