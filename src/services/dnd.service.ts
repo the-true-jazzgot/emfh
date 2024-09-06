@@ -40,7 +40,6 @@ export const addTaskToComponent = (e: DragEndEvent) => {
     
     switch(currCategory) {
       case "uncategorized":
-        console.log("Move task: "+taskId+" from: "+currCategory+" to: "+ newCategory);
         uncategorizedDispatch(move);
         break;
       case "q1":
@@ -56,24 +55,6 @@ export const addTaskToComponent = (e: DragEndEvent) => {
         q4Dispatch(move);
         break;
     }
-
-    // switch(newCategory) {
-    //   case "uncategorized":
-    //     uncategorizedDispatch(add);
-    //     break;
-    //   case "q1":
-    //     q1Dispatch(add);
-    //     break;
-    //   case "q2":
-    //     q2Dispatch(add);
-    //     break;
-    //   case "q3":
-    //     q3Dispatch(add);
-    //     break;
-    //   case "q4":
-    //     q4Dispatch(add);
-    //     break;
-    // }
   }
 };
 
@@ -82,7 +63,7 @@ export const TasksActionsFactory: Record<EMCategory, () => Observable<TasksListA
   "q1": q1Action,
   "q2": q2Action,
   "q3": q3Action,
-  "q4": ():Observable<TasksListAction> => q4Subject.asObservable()
+  "q4": q4Action
 }
 
 export const TasksDispatchFactory: Record<EMCategory, (task: TasksListAction) => void> = {

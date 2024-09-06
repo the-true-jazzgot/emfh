@@ -10,12 +10,12 @@ export function Quadrant({quadrant}:{quadrant: EMCategory}) {
   const [ tasks, setTasks ] = useState<Task[]>([]);
 
   function moveTask(taskId: string, moveTo: EMCategory):void {
-    console.log("Move task: "+taskId+"from: "+quadrant+" to: "+moveTo);
     const task = tasks.find(item => item.id === taskId);
     if(!!task) {
       setTasks(
         tasks.filter(item => item.id !== taskId)
       );
+      task.category = moveTo;
       TasksDispatchFactory[moveTo]({taskId: taskId, task: task, action: "add"} as TasksListAction);
     }
   }
@@ -23,6 +23,19 @@ export function Quadrant({quadrant}:{quadrant: EMCategory}) {
   function addTask(task: Task):void {
     setTasks([...tasks, task]);
   }
+
+  useEffect(() => {
+    const subscription = TasksActionsFactory[quadrant]().subscribe(
+      (action: TasksListAction) => {
+        if(action.action ===  "move") moveTask(action.taskId, action.moveTo || "uncategorized");
+        if(action.action === "add" && !!action.task) addTask(action.task);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [tasks]); 
 
   useEffect(()=>{
     isSuccess?
@@ -33,20 +46,6 @@ export function Quadrant({quadrant}:{quadrant: EMCategory}) {
   const {setNodeRef} = useDroppable({
     id: quadrant
   });
-
-  useEffect(() => {
-    const subscription = TasksActionsFactory[quadrant]().subscribe(
-      (action: TasksListAction) => {
-        console.log(action);
-        if(action.action ===  "move") moveTask(action.taskId, action.moveTo || "uncategorized");
-        if(action.action === "add" && !!action.task) addTask(action.task);
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [tasks]); 
 
   return (
     <section id={quadrant} ref={setNodeRef} className={"js-" + quadrant + " col-span-2 row-span-5 rounded bg-container p-2"} >
