@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
-import { assistant } from "../../services/assistant.service";
-import { EMCategory, Task } from "../../types";
+import { EMCategory } from "../../types";
 import { Q1Assistant } from "./Q1Assistant";
+import { assistant } from "../../services/assistant.service";
 
 export function AssistantContainer() {
-  const [quadrants, setQuadrants] = useState<EMCategory[]>([]);
+  const [ quadrants, setQuadrants ] = useState<EMCategory[]>([]);
+
+  useEffect(()=>{
+    const subscription = assistant.getTasksQuadrants().subscribe(
+      (quadrants: EMCategory[]) => {
+        setQuadrants(quadrants);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [quadrants]);
 
   const renderFirstQuadrantAssistant = () => { 
     if(quadrants.length > 0) {
@@ -17,18 +29,6 @@ export function AssistantContainer() {
       }
     }
   }
-
-  useEffect(() => {
-    const subscription = assistant.getTasksQuadrants().subscribe(
-      (receivedQuadrants: EMCategory[]) => {
-        setQuadrants(receivedQuadrants);
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [quadrants]); 
 
   return (
     <div className="fixed_center bg-white">

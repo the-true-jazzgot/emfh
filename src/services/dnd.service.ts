@@ -35,27 +35,30 @@ export const addTaskToComponent = (e: DragEndEvent) => {
 
   if(e.over?.id && !!task) {
     const currCategory:EMCategory = task.dataset.category as EMCategory || "uncategorized";
-    const newCategory: EMCategory = e.over?.id as EMCategory
-    const move: TasksListAction = { taskId: taskId, action: "move", moveTo: newCategory };
+    const newCategory: EMCategory = e.over?.id as EMCategory;
+
+    if(currCategory !== newCategory) {
+      const move: TasksListAction = { taskId: taskId, action: "move", moveTo: newCategory };
     
-    switch(currCategory) {
-      case "uncategorized":
-        uncategorizedDispatch(move);
-        break;
-      case "q1":
-        q1Dispatch(move);
-        break;
-      case "q2":
-        q2Dispatch(move);
-        break;
-      case "q3":
-        q3Dispatch(move);
-        break;
-      case "q4":
-        q4Dispatch(move);
-        break;
+      switch(currCategory) {
+        case "uncategorized":
+          uncategorizedDispatch(move);
+          break;
+        case "q1":
+          q1Dispatch(move);
+          break;
+        case "q2":
+          q2Dispatch(move);
+          break;
+        case "q3":
+          q3Dispatch(move);
+          break;
+        case "q4":
+          q4Dispatch(move);
+          break;
+      }
     }
-  }
+    }
 };
 
 export const TasksActionsFactory: Record<EMCategory, () => Observable<TasksListAction>> = {

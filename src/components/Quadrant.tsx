@@ -4,15 +4,21 @@ import { TaskLabel } from "./TaskLabel";
 import { useEffect, useState } from "react";
 import { filterData, toDosQuery } from "../services/tasks.service";
 import { TasksActionsFactory, TasksDispatchFactory, TasksListAction } from "../services/dnd.service";
+import { assistantFactory } from "../services/assistant.service";
 
 export function Quadrant({quadrant}:{quadrant: EMCategory}) {
   const { data, isSuccess } = toDosQuery()
   const [ tasks, setTasks ] = useState<Task[]>([]);
 
+  function updateTasks(newTasks: Task[]):void {
+    assistantFactory[quadrant](newTasks);
+    setTasks(newTasks);
+  }
+
   function moveTask(taskId: string, moveTo: EMCategory):void {
     const task = tasks.find(item => item.id === taskId);
     if(!!task) {
-      setTasks(
+      updateTasks(
         tasks.filter(item => item.id !== taskId)
       );
       task.category = moveTo;
@@ -20,15 +26,11 @@ export function Quadrant({quadrant}:{quadrant: EMCategory}) {
     }
   }
 
-  function addTask(task: Task):void {
-    setTasks([...tasks, task]);
-  }
-
   useEffect(() => {
     const subscription = TasksActionsFactory[quadrant]().subscribe(
       (action: TasksListAction) => {
         if(action.action ===  "move") moveTask(action.taskId, action.moveTo || "uncategorized");
-        if(action.action === "add" && !!action.task) addTask(action.task);
+        if(action.action === "add" && !!action.task) updateTasks([...tasks,action.task]);
       }
     );
 

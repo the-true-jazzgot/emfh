@@ -17,7 +17,7 @@ function App() {
         <Quadrant quadrant={"q3"} />
         <Quadrant quadrant={"q4"} />
       </DndContext>
-      <Controls q1={[]} q2={[]} q3={[]} q4={[]} />
+      <Controls />
       <AssistantContainer />
     </div>
   );
