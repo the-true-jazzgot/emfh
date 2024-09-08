@@ -11,5 +11,6 @@ export type Task = {
 export type AuthData = {
     id: string,
     apiToken: string,
-    username: string
+    username: string,
+    email?: string
 }

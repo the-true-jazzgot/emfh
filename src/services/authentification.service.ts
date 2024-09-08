@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { habiticaAPIconf } from "../config/APIconfig";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { AuthData } from "../types";
 
 interface LoginDataContract {
@@ -21,25 +21,28 @@ export interface UserCredentials {
 
 const axiosInstance = axios.create(habiticaAPIconf);
 
-function parseResponse(response:LoginDataContract):AuthData{
-  return {
+function parseResponse(response:LoginDataContract, userName: string):AuthData{
+  let dataResponse:AuthData = {
     id: response.data.id,
     apiToken: response.data.apiToken,
     username: response.data.username
   }
+
+  userName !== dataResponse.username ? dataResponse = {...dataResponse, email: userName} : null;
+
+  return dataResponse;
 }
 
 const getAuthenticationData = async (userCredentials:UserCredentials):Promise<AuthData> => {
   const response = await axiosInstance.post<LoginDataContract>("/user/auth/local/login", {...userCredentials});
-  return parseResponse(response.data);
+  return parseResponse(response.data, userCredentials.username);
 }
 
-export function useCredentialData() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (loginData:UserCredentials):Promise<AuthData> => getAuthenticationData(loginData),
-    onSuccess: (data:AuthData) => queryClient.setQueryData(['authData'], data)
+export function useCredentialData(userCredentials:UserCredentials) {
+  return useQuery({
+    queryFn: async () => await getAuthenticationData(userCredentials),
+    queryKey: ['authData'],
+    enabled: userCredentials.username !== "" && userCredentials.password !== ""
   });
 };
 
