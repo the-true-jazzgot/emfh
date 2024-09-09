@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { AuthData, EMCategory, Task } from "../types";
-import { getGetRequestSettings } from "./authentification.service";
+import { getRequestSettings } from "./authentification.service";
 import { Observable, Subject } from "rxjs";
 
 // interface ChecklistContract {
@@ -52,7 +52,7 @@ const getTodos = async (authData:AuthData | undefined):Promise<any[]> => {
     throw Error("Habitica API token missing or broken, login to get it");
   }
 
-  const response:AxiosResponse<TaskListContract> = await axiosInstance.get("/tasks/user", getGetRequestSettings(authData));
+  const response:AxiosResponse<TaskListContract> = await axiosInstance.get("/tasks/user", getRequestSettings(authData));
   return response.data.data;
 };
 

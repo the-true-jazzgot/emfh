@@ -1,7 +1,6 @@
 import { MouseEvent, useEffect, useState } from "react";
 import { useCredentialData, UserCredentials } from "../services/authentification.service";
 import { toDosQuery } from "../services/tasks.service";
-import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "./ui_elements/Button";
 
 export function LoginForm() {
@@ -22,7 +21,6 @@ export function LoginForm() {
   }
 
   function handleLogout() {
-    const queryClient = useQueryClient();
     console.log(data);
   }
 

@@ -42,7 +42,7 @@ export function useCredentialData(userCredentials:UserCredentials) {
   });
 };
 
-export function getGetRequestSettings(authData:AuthData):AxiosRequestConfig {
+export function getRequestSettings(authData:AuthData):AxiosRequestConfig {
   if (authData) return {
     baseURL: habiticaAPIconf.baseURL,
     headers: {
