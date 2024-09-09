@@ -48,33 +48,27 @@ function convertRawDataToTasks(data:any):Task[] {
   return data.data.map((item: { id: any; text: any; }) => ({ id: item.id, name: item.text, category: "uncategorized" })) as Task[];
 };
 
-const getTodos = async (authData:AuthData):Promise<Task[]> => {
-  if (authData) {
-    const response = await axiosInstance.get<any[]>("/tasks/user", getGetRequestSettings(authData));
-    return convertRawDataToTasks(response.data);
-  } else {
-    // throw authError;
-    return [] as Task[];
-  };
+const getTodos = async (authData:AuthData | undefined):Promise<Task[]> => {
+  if(!authData) {
+    throw Error("Habitica API token missing or broken, login to get it");
+  }
+
+  console.log("geTodos - attempting API call")
+
+  const response = await axiosInstance.get<any[]>("/tasks/user", getGetRequestSettings(authData));
+  return convertRawDataToTasks(response.data);
 };
 
 export function toDosQuery() {
   const queryClient = useQueryClient();
   const authData:AuthData | undefined = queryClient.getQueryData(['authData']);
-  
-  if(authData) {
-    return useQuery({
-      queryKey: ['todos'], 
-      queryFn:  async () => await getTodos(authData),
-      enabled: true,
-      initialData: [] as Task[]
-    });
-  }
 
   return useQuery({
-    queryKey: ['todos'], 
-    queryFn:  () => [] as Task[],
-    enabled: false
+    queryKey: ['todos', authData?.username],
+    queryFn:  async () => await getTodos(authData),
+    enabled: !!authData,
+    initialData: [] as Task[],
+    refetchInterval: 1800000
   });
 };
 

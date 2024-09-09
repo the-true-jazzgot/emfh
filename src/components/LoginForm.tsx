@@ -1,26 +1,29 @@
-import { MouseEvent } from "react";
-import { useCredentialData } from "../services/authentification.service";
+import { MouseEvent, useEffect, useState } from "react";
+import { useCredentialData, UserCredentials } from "../services/authentification.service";
 import { toDosQuery } from "../services/tasks.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "./ui_elements/Button";
 
 export function LoginForm() {
-  const { mutate, isSuccess, data, status } = useCredentialData();
-  const { refetch, data:elo } = toDosQuery();
-  const queryClient = useQueryClient(); //handle logout
+  const [ credentials, setCredentials ] = useState<UserCredentials>();
+  const { isSuccess, data, status, error } = useCredentialData({password: credentials?.password || "", username: credentials?.username || ""});
+  const { refetch } = toDosQuery();
+
+  useEffect(()=>{
+    refetch();
+  }, [isSuccess]);
 
   function handleLogin(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
     e.preventDefault();
-    mutate({
+    setCredentials({
       username: (document.getElementById("email") as HTMLInputElement).value,
       password: (document.getElementById("password") as HTMLInputElement).value
     });
-    refetch();
   }
 
   function handleLogout() {
+    const queryClient = useQueryClient();
     console.log(data);
-    console.log(elo);
   }
 
   return (
@@ -37,6 +40,7 @@ export function LoginForm() {
           <input type="password" name="password" id="password"></input>
         </label>
         <Button text="Submit" fn={(e)=> {handleLogin(e)}} type="submit" />
+        <p>{status === "error" ? error.message : "Use your Habitica account credentials"}</p>
       </>}
       </form>
     </header>
