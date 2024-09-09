@@ -39,7 +39,7 @@ import { Observable, Subject } from "rxjs";
 
 interface TaskListContract {
   success:boolean,
-  data:any[],
+  data:any[], //TaskContract[]
   notifications:any[],
   userV: number,
   appVersion: string

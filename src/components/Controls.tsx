@@ -6,7 +6,7 @@ import { convertRawDataToTasks, filterData, tasksQ1, tasksQ2, tasksQ3, tasksQ4, 
 import { moveTask, TasksListAction } from "../services/dnd.service";
 
 export function Controls() {
-  const { data } = toDosQuery();
+  const { data, status } = toDosQuery();
   const [uncategorized, setUncategorized] = useState<Task[]>([]);
   const [q1, setQ1] = useState<Task[]>([]);
   const [q2, setQ2] = useState<Task[]>([]);
@@ -47,40 +47,58 @@ export function Controls() {
     }
   }
 
+  useEffect(()=>{
+    tasksQ1.dispatch(q1);
+  }, [q1]);
+
+  useEffect(()=>{
+    tasksQ2.dispatch(q2);
+  }, [q2]);
+
+  useEffect(()=>{
+    tasksQ3.dispatch(q3);
+  }, [q3]);
+
+  useEffect(()=>{
+    tasksQ4.dispatch(q4);
+  }, [q4]);
+
+  useEffect(()=>{
+    tasksUncategorized.dispatch(uncategorized);
+  }, [uncategorized]);
+  
+
   useEffect(() => {
-    // console.log(data);
     const receivedData = convertRawDataToTasks(data);
     setQ1(filterData("q1", receivedData));
     setQ2(filterData("q2", receivedData));
     setQ3(filterData("q3", receivedData));
     setQ4(filterData("q4", receivedData));
     setUncategorized(filterData("uncategorized", receivedData));
-
-    quadrantsFactory["q1"].send(quadrantsFactory["q1"].get);
-    quadrantsFactory["q2"].send(quadrantsFactory["q2"].get);
-    quadrantsFactory["q3"].send(quadrantsFactory["q3"].get);
-    quadrantsFactory["q4"].send(quadrantsFactory["q4"].get);
-    quadrantsFactory["uncategorized"].send(quadrantsFactory["uncategorized"].get);
-  }, [data]);
+  }, [data, status]);
 
   useEffect(() => {
     const subscription = moveTask.receive().subscribe(
       (action: TasksListAction) => {
-        console.log(action);
         const from = quadrantsFactory[action.moveFrom];
         const to = quadrantsFactory[action.moveTo];
+        const taskToMove:Task | undefined = from.get.find((item:Task) => item.id === action.taskId);
+        let moveToTasks:Task[] = [];
 
-        to.set([...to.get, from.get.find((item:Task) => item.id === action.taskId)]);
+        if(!!to.get) to.get.forEach(item => moveToTasks.push(item));
+        if(!!taskToMove) {
+          taskToMove.category = action.moveTo;
+          moveToTasks.push(taskToMove);
+        };
         from.set(from.get.filter((item:Task) => item.id !== action.taskId) as Task[]);
-        to.send(to.get);
-        from.send(from.get);
+        to.set(moveToTasks);
       }
     );
 
     return () => {
       subscription.unsubscribe();
     }
-  }, [data]);
+  }, [data, q1, q2, q3, q4, uncategorized]);
   
   const evaluateMatrix = ():void => {
     const quadrants:EMCategory[] = [];
