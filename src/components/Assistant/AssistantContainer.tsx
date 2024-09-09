@@ -3,10 +3,10 @@ import { Q1Assistant } from "./Q1Assistant";
 import { assistant, TasksMatrix } from "../../services/assistant.service";
 
 export function AssistantContainer() {
-  const [ quadrantsMarix, setQuadrantsMatrix] = useState<TasksMatrix>({} as TasksMatrix);
+  const [ quadrantsMatrix, setQuadrantsMatrix] = useState<TasksMatrix>({} as TasksMatrix);
 
   useEffect(()=>{
-    const subscription = assistant.getTasksQuadrants().subscribe(
+    const subscription = assistant.getAssistantData().subscribe(
       (tasksMatrix: TasksMatrix):void => {
         setQuadrantsMatrix(tasksMatrix);
       }
@@ -15,13 +15,13 @@ export function AssistantContainer() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [quadrantsMarix]);
+  }, [quadrantsMatrix]);
 
   const renderFirstQuadrantAssistant = () => { 
-    if(!!quadrantsMarix.quadrants && quadrantsMarix.quadrants.length > 0) {
-      switch(quadrantsMarix.quadrants[0]) {
+    if(!!quadrantsMatrix.quadrants && quadrantsMatrix.quadrants.length > 0) {
+      switch(quadrantsMatrix.quadrants[0]) {
         case "q1":
-          return <Q1Assistant tasks={quadrantsMarix.q1} />;
+          return <Q1Assistant tasks={quadrantsMatrix.q1} />;
         default:
           return "";
       }

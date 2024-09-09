@@ -11,7 +11,7 @@ export function LoginForm() {
 
   useEffect(()=>{
     refetch();
-  }, [isSuccess]);
+  }, [data]);
 
   function handleLogin(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
     e.preventDefault();

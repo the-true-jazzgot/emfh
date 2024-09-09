@@ -1,36 +1,16 @@
 import { useEffect, useState } from "react";
-import { convertRawDataToTasks, filterData, toDosQuery } from "../services/tasks.service";
 import { EMCategory, Task } from "../types";
 import { TaskLabel } from "./TaskLabel";
 import { useDroppable } from "@dnd-kit/core";
-import { TasksActionsFactory, TasksDispatchFactory, TasksListAction } from "../services/dnd.service";
-import { assistantFactory } from "../services/assistant.service";
+import { getTasksFactory } from "../services/tasks.service";
 
 export function SidebarTasksList() {
-  const { data, isSuccess } = toDosQuery();
   const [ tasks, setTasks ] = useState<Task[]>([]);
-  
-  function updateTasks(newTasks: Task[]):void {
-    assistantFactory["uncategorized"](newTasks);
-    setTasks(newTasks);
-  }
-
-  function moveTask(taskId: string, moveTo: EMCategory):void {
-    const task = tasks.find(item => item.id === taskId);
-    if(!!task) {
-      updateTasks(
-        tasks.filter(item => item.id !== taskId)
-      );
-      task.category = moveTo;
-      TasksDispatchFactory[moveTo]({taskId: taskId, task: task, action: "add"} as TasksListAction);
-    }
-  }
 
   useEffect(() => {
-    const subscription = TasksActionsFactory["uncategorized"]().subscribe(
-      (action: TasksListAction) => {
-        if(action.action ===  "move") moveTask(action.taskId, action.moveTo || "uncategorized");
-        if(action.action === "add" && !!action.task) updateTasks([...tasks,action.task]);
+    const subscription = getTasksFactory["uncategorized"]().subscribe(
+      (newTasks: Task[]):void => {
+        setTasks(newTasks);
       }
     );
 
@@ -38,12 +18,6 @@ export function SidebarTasksList() {
       subscription.unsubscribe();
     };
   }, [tasks]); 
-
-  useEffect(()=>{
-    isSuccess?
-    setTasks(filterData("uncategorized", convertRawDataToTasks(data))):
-    setTasks([] as Task[])
-  }, [data]);
 
   const {setNodeRef} = useDroppable({
     id: "uncategorized"
