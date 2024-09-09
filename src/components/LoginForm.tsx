@@ -8,7 +8,6 @@ export function LoginForm() {
   const [ credentials, setCredentials ] = useState<UserCredentials>();
   const { isSuccess, data, status, error } = useCredentialData({password: credentials?.password || "", username: credentials?.username || ""});
   const { refetch } = toDosQuery();
-  const queryClient = useQueryClient(); //handle logout
 
   useEffect(()=>{
     refetch();
@@ -23,6 +22,7 @@ export function LoginForm() {
   }
 
   function handleLogout() {
+    const queryClient = useQueryClient();
     console.log(data);
   }
 

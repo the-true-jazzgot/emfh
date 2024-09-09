@@ -21,21 +21,17 @@ export interface UserCredentials {
 
 const axiosInstance = axios.create(habiticaAPIconf);
 
-function parseResponse(response:LoginDataContract, userName: string):AuthData{
-  let dataResponse:AuthData = {
+function parseResponse(response:LoginDataContract):AuthData{
+  return {
     id: response.data.id,
     apiToken: response.data.apiToken,
     username: response.data.username
-  }
-
-  userName !== dataResponse.username ? dataResponse = {...dataResponse, email: userName} : null;
-
-  return dataResponse;
+  };
 }
 
 const getAuthenticationData = async (userCredentials:UserCredentials):Promise<AuthData> => {
   const response = await axiosInstance.post<LoginDataContract>("/user/auth/local/login", {...userCredentials});
-  return parseResponse(response.data, userCredentials.username);
+  return parseResponse(response.data);
 }
 
 export function useCredentialData(userCredentials:UserCredentials) {

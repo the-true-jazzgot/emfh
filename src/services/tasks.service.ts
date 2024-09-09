@@ -62,12 +62,9 @@ const getTodos = async (authData:AuthData | undefined):Promise<Task[]> => {
 export function toDosQuery() {
   const queryClient = useQueryClient();
   const authData:AuthData | undefined = queryClient.getQueryData(['authData']);
-  const userQueryKey = !!authData?.email ? authData.email : authData?.username;
-
-  console.log("toDosQuery - returning useQuery with given params: " + authData);
 
   return useQuery({
-    queryKey: ['todos', userQueryKey],
+    queryKey: ['todos', authData?.username],
     queryFn:  async () => await getTodos(authData),
     enabled: !!authData,
     initialData: [] as Task[],
