@@ -1,6 +1,14 @@
 import { Observable, Subject } from 'rxjs';
 import { EMCategory, Task } from '../types';
 
+export interface TasksMatrix {
+  quadrants: EMCategory[],
+  q1?: Task[],
+  q2?: Task[],
+  q3?: Task[],
+  q4?: Task[]
+}
+
 const uncategorizedSubject:Subject<Task[]> = new Subject();
 
 export const assistantUncategorized = {
@@ -36,11 +44,11 @@ export const assistantQ4 = {
   getTasksQuadrants: ():Observable<Task[]> => subjectQ4.asObservable()
 };
 
-const subject:Subject<EMCategory[]> = new Subject();
+const subject:Subject<TasksMatrix> = new Subject();
 
 export const assistant = {
-  setTasksQuadrants: (tasks: EMCategory[]):void => subject.next(tasks),
-  getTasksQuadrants: ():Observable<EMCategory[]> => subject.asObservable()
+  setAssistantData: (tasksMatrix: TasksMatrix):void => subject.next(tasksMatrix),
+  getTasksQuadrants: ():Observable<TasksMatrix> => subject.asObservable()
 };
 
 export const assistantFactory: Record<EMCategory, (tasks: Task[]) => void> = {

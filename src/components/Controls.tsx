@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { assistant, assistantQ1, assistantQ2, assistantQ3, assistantQ4, assistantUncategorized } from "../services/assistant.service";
+import { assistant, assistantQ1, assistantQ2, assistantQ3, assistantQ4, assistantUncategorized, TasksMatrix } from "../services/assistant.service";
 import { EMCategory, Task } from "../types";
 import { Button } from "./ui_elements/Button";
 
@@ -72,12 +72,14 @@ export function Controls() {
   
   const evaluateMatrix = ():void => {
     const quadrants:EMCategory[] = [];
+    let tasksMatrix: TasksMatrix = {quadrants};
 
     if(q1.length > 3 && !quadrants.find(item => item === "q1")) {
         quadrants.push("q1");
+        tasksMatrix.q1 = q1;
     }
 
-    assistant.setTasksQuadrants(quadrants)
+    assistant.setAssistantData(tasksMatrix);
   }
 
   function isDisabled():boolean {

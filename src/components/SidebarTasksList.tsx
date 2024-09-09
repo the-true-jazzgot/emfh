@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { filterData, toDosQuery } from "../services/tasks.service";
+import { convertRawDataToTasks, filterData, toDosQuery } from "../services/tasks.service";
 import { EMCategory, Task } from "../types";
 import { TaskLabel } from "./TaskLabel";
 import { useDroppable } from "@dnd-kit/core";
@@ -8,7 +8,7 @@ import { assistantFactory } from "../services/assistant.service";
 
 export function SidebarTasksList() {
   const { data, isSuccess } = toDosQuery();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [ tasks, setTasks ] = useState<Task[]>([]);
   
   function updateTasks(newTasks: Task[]):void {
     assistantFactory["uncategorized"](newTasks);
@@ -41,7 +41,7 @@ export function SidebarTasksList() {
 
   useEffect(()=>{
     isSuccess?
-    setTasks(filterData("uncategorized", data)):
+    setTasks(filterData("uncategorized", convertRawDataToTasks(data))):
     setTasks([] as Task[])
   }, [data]);
 
