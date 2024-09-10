@@ -5,7 +5,8 @@ export type TaskType = "habit" | "daily" | "todo" | "reward";
 export type Task = {
     id: string, 
     name: string,
-    category: EMCategory
+    category: EMCategory,
+    date?: Date
 }
 
 export type AuthData = {

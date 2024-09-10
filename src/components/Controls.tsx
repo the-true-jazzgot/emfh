@@ -104,9 +104,12 @@ export function Controls() {
     const quadrants:EMCategory[] = [];
     let tasksMatrix: TasksMatrix = {quadrants};
 
+    tasksMatrix.q1 = q1;
     if(q1.length > 3 && !quadrants.find(item => item === "q1")) {
         quadrants.push("q1");
-        tasksMatrix.q1 = q1;
+    }
+    else {
+      autoresolveQ1(q1);
     }
 
     assistant.setAssistantData(tasksMatrix);
@@ -123,3 +126,12 @@ export function Controls() {
     </footer>
   );
 }
+
+function autoresolveQ1(q1: Task[]) {
+  const currentdate:Date = new Date();
+  q1.forEach(item => {
+    item.date = currentdate;
+  });
+  // useMutateQ1(q1);
+}
+

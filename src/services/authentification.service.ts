@@ -19,7 +19,7 @@ export interface UserCredentials {
   password: string
 };
 
-const axiosInstance = axios.create(habiticaAPIconf);
+export const axiosInstance = axios.create(habiticaAPIconf); //TODO: move to more general service
 
 function parseResponse(response:LoginDataContract):AuthData{
   return {
@@ -47,8 +47,8 @@ export function getRequestSettings(authData:AuthData):AxiosRequestConfig {
     baseURL: habiticaAPIconf.baseURL,
     headers: {
       ...habiticaAPIconf.headers,
-      'x-api-user' : authData?.id, 
-      'x-api-key' : authData?.apiToken
+      'x-api-user' : authData.id, 
+      'x-api-key' : authData.apiToken
     }
   };
   

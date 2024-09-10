@@ -15,3 +15,7 @@ export const assistant = {
   setAssistantData: (tasksMatrix: TasksMatrix):void => subject.next(tasksMatrix),
   getAssistantData: ():Observable<TasksMatrix> => subject.asObservable()
 };
+
+
+
+
