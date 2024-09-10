@@ -6,7 +6,7 @@ import { Button } from "./ui_elements/Button";
 export function LoginForm() {
   const [ credentials, setCredentials ] = useState<UserCredentials>();
   const { isSuccess, data, status, error } = useCredentialData({password: credentials?.password || "", username: credentials?.username || ""});
-  const { refetch } = toDosQuery();
+  const { refetch} = toDosQuery();
 
   useEffect(()=>{
     refetch();
@@ -21,7 +21,9 @@ export function LoginForm() {
   }
 
   function handleLogout() {
+    console.log("Log out clicked, authData in cache: ");
     console.log(data);
+    refetch();
   }
 
   return (

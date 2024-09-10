@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { AuthData, EMCategory, Task, TaskType } from "../types";
 import { axiosInstance, getRequestSettings } from "./authentification.service";
 import { Observable, Subject } from "rxjs";
@@ -47,34 +47,48 @@ interface TaskListContract {
   appVersion: string
 }
 
-const getTodos = async (authData:AuthData | undefined, type?:string):Promise<any[]> => {
+const getTodos = async (authData:AuthData | undefined, type:string | undefined):Promise<any[]> => {
   if(!authData) {
     throw Error("Habitica API token missing or broken, login to get it");
   }
 
   let requestSettings:AxiosRequestConfig<TaskDataContract[]> = getRequestSettings(authData);
-  !!type ? requestSettings = {...requestSettings, params: {type: type}} :null;
+  !!type ? requestSettings = {...requestSettings, params: {type: type.toString() +"s"}} :null;
+
+  let tmpType;
+  !!type ? tmpType = type.toString() +"s" : tmpType = "no-type";
+  console.log("Getting tasks data for type: " + tmpType + " and user: " + authData.username);
+
   const response:AxiosResponse<TaskListContract> = await axiosInstance.get("/tasks/user", requestSettings);
+
+  console.log(response);
+
   return response.data.data;
 };
+
+export const todoKeys = {
+  all: (username: string | undefined)=> ['todos', username] as const,
+  type: (username: string | undefined, type: TaskType) => [...todoKeys.all(username), type.toString() +"s"] as const
+}
 
 export function toDosQuery(type?:TaskType) {
   const queryClient = useQueryClient();
   const authData:AuthData | undefined = queryClient.getQueryData(['authData']);
-  const queryType = !!type ? type.toString() +"s" : undefined;
+  const queryKey = type? todoKeys.type(authData?.username, type) : todoKeys.all(authData?.username);
+  console.log("requesting task data or cache with queryKey: "+queryKey);
 
   return useQuery({
-    queryKey: ['todos', authData?.username], //TODO: add filter for type
-    queryFn:  async () => await getTodos(authData, queryType), //TODO: pass optional type value
-    enabled: !!authData,
+    queryKey: queryKey,
+    queryFn:  async () => await getTodos(authData, type),
+    enabled: true,
     initialData: [] as any[],
-    refetchInterval: 1800000
+    refetchInterval: 900000
   });
 };
 
 export  function convertRawDataToTasks(data:TaskDataContract[]):Task[] {
-  return data.map((item: { id: string, text: string, date?: Date }):Task => ({
-    id: item.id, name: item.text, category: "uncategorized", date: item.date || undefined
+  return data.map((item: { id: string, text: string, date?: Date, type: TaskType }):Task => ({
+    id: item.id, name: item.text, category: "uncategorized", date: item.date, type: item.type
   }));
 };
 
@@ -135,7 +149,7 @@ const updateTask = async (localtask:Task):Promise<TaskDataContract> => {
   const queryClient = useQueryClient();
   const authData:AuthData | undefined = queryClient.getQueryData(['authData']);
   if(!authData) {
-    throw new Error("No authentication data - login to set");
+    throw new Error("No authentication data - login to reciveive");
   }
   const servertask:TaskDataContract | undefined = queryClient.getQueryData(["todos", authData.username, localtask.id]); //TODO: useQuery insted of getQueryData
   if(!servertask) {

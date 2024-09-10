@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { habiticaAPIconf } from "../config/APIconfig";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AuthData } from "../types";
 
 interface LoginDataContract {
@@ -30,15 +30,19 @@ function parseResponse(response:LoginDataContract):AuthData{
 }
 
 const getAuthenticationData = async (userCredentials:UserCredentials):Promise<AuthData> => {
+  console.log("getting auth data for: " + userCredentials.username);
   const response = await axiosInstance.post<LoginDataContract>("/user/auth/local/login", {...userCredentials});
   return parseResponse(response.data);
 }
 
 export function useCredentialData(userCredentials:UserCredentials) {
+  const queryClient = useQueryClient();
+  const authData:AuthData | undefined = queryClient.getQueryData(['authData']);
+
   return useQuery({
     queryFn: async () => await getAuthenticationData(userCredentials),
     queryKey: ['authData'],
-    enabled: userCredentials.username !== "" && userCredentials.password !== ""
+    enabled: userCredentials.username !== "" && userCredentials.password !== "" && !authData
   });
 };
 

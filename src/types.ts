@@ -6,6 +6,7 @@ export type Task = {
     id: string, 
     name: string,
     category: EMCategory,
+    type: TaskType,
     date?: Date
 }
 
