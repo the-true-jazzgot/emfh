@@ -86,14 +86,33 @@ export function toDosQuery(type?:TaskType) {
   });
 };
 
-export  function convertRawDataToTasks(data:TaskDataContract[]):Task[] {
-  return data.map((item: { id: string, text: string, date?: Date, type: TaskType }):Task => ({
+export  function convertServerDataToLocalData(rawTasks:TaskDataContract[], habits:boolean, dailies: boolean, todos: boolean):Task[] {
+  const data:TaskDataContract[] = filterDataByType(habits, dailies, todos, rawTasks);
+  return data.map((item: { id: string, text: string, date?: Date, type: TaskType }):Task => ({ //task data contract
     id: item.id, name: item.text, category: "uncategorized", date: item.date, type: item.type
   }));
 };
 
-export const filterData = (category:EMCategory, allTasks:Task[]):Task[] => {
+export const filterDataByCategory = (category:EMCategory, allTasks:Task[]):Task[] => {
   return allTasks?.filter(item => item.category === category) || [] as Task[];
+}
+
+export const filterDataByType = (habits:boolean, dailies:boolean, todos:boolean, allTasks:TaskDataContract[]):TaskDataContract[] => {
+  let returnTasks:TaskDataContract[] = [];
+  let filteredTasks: TaskDataContract[] = [];
+  if(habits) {
+    filteredTasks = allTasks?.filter(item => item.type === "habit");
+    returnTasks = [...filteredTasks];
+  };
+  if(dailies) {
+    filteredTasks = allTasks?.filter(item => item.type === "daily");
+    returnTasks = [...returnTasks,...filteredTasks];
+  }
+  if(todos) {
+    filteredTasks = allTasks?.filter(item => item.type === "todo");
+    returnTasks = [...returnTasks,...filteredTasks];
+  }
+  return returnTasks;
 }
 
 const uncategorizedSubject:Subject<Task[]> = new Subject();

@@ -1,18 +1,28 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { assistant, TasksMatrix } from "../services/assistant.service";
-import { EMCategory, Task } from "../types";
+import { EMCategory, Task, TaskType } from "../types";
 import { Button } from "./ui_elements/Button";
-import { convertRawDataToTasks, filterData, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery } from "../services/tasks.service";
+import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery } from "../services/tasks.service";
 import { moveTask, TasksListAction } from "../services/dnd.service";
+import { CheckboxWL } from "./ui_elements/CheckboxWL";
 
 export function Controls() {
-  const { data, status } = toDosQuery();
+  const [ areHabits, setAreHabits] = useState<boolean>(false);
+  const [ areDailies, setAreDailies ] = useState<boolean>(false);
+  const [ areTodos, setAreTodos ] = useState<boolean>(true);
+  const { data, status } = toDosQuery(setQueryCategory());
   const [uncategorized, setUncategorized] = useState<Task[]>([]);
   const [q1, setQ1] = useState<Task[]>([]);
   const [q2, setQ2] = useState<Task[]>([]);
   const [q3, setQ3] = useState<Task[]>([]);
   const [q4, setQ4] = useState<Task[]>([]);
 
+  function setQueryCategory():TaskType | undefined { //if only one category is selected pull only it, otherwise pull all
+    if(areHabits && !areDailies && !areTodos) return "habit";
+    if(!areHabits && areDailies && !areTodos) return "daily";
+    if(!areHabits && !areDailies && areTodos) return "todo";
+    return undefined;
+  }
   interface quadrants {
     get: Task[],
     set: Dispatch<SetStateAction<Task[]>>,
@@ -69,13 +79,13 @@ export function Controls() {
   
 
   useEffect(() => {
-    const receivedData = convertRawDataToTasks(data);
-    setQ1(filterData("q1", receivedData));
-    setQ2(filterData("q2", receivedData));
-    setQ3(filterData("q3", receivedData));
-    setQ4(filterData("q4", receivedData));
-    setUncategorized(filterData("uncategorized", receivedData));
-  }, [data, status]);
+    const receivedData = convertServerDataToLocalData(data, areHabits, areDailies, areTodos);
+    setQ1(filterDataByCategory("q1", receivedData));
+    setQ2(filterDataByCategory("q2", receivedData));
+    setQ3(filterDataByCategory("q3", receivedData));
+    setQ4(filterDataByCategory("q4", receivedData));
+    setUncategorized(filterDataByCategory("uncategorized", receivedData));
+  }, [data, status, areDailies, areHabits, areTodos]);
 
   useEffect(() => {
     const subscription = moveTask.receive().subscribe(
@@ -99,6 +109,15 @@ export function Controls() {
       subscription.unsubscribe();
     }
   }, [data, q1, q2, q3, q4, uncategorized]);
+
+  
+  function autoresolveQ1(q1: Task[]) {
+    const currentdate:Date = new Date();
+    q1.forEach(item => {
+      item.date = currentdate;
+    });
+    // useMutateQ1(q1);
+  }
   
   const evaluateMatrix = ():void => {
     const quadrants:EMCategory[] = [];
@@ -121,17 +140,15 @@ export function Controls() {
   };
 
   return (
-    <footer className="col-span-5 row-span-1">
+    <footer className="flex col-span-5 row-span-1">
       <Button text="Apply" fn={evaluateMatrix} disabled={isDisabled()} />
+      <div className="flex">
+        <CheckboxWL id="habits" label="Habits" onCheckedChange={val => setAreHabits(val)} checked={areHabits} />
+        <CheckboxWL id="dailies" label="Dailies" onCheckedChange={val => setAreDailies(val)} checked={areDailies} />
+        <CheckboxWL id="todos" label="ToDos" onCheckedChange={val => setAreTodos(val)} checked={areTodos} />
+      </div>
     </footer>
   );
 }
 
-function autoresolveQ1(q1: Task[]) {
-  const currentdate:Date = new Date();
-  q1.forEach(item => {
-    item.date = currentdate;
-  });
-  // useMutateQ1(q1);
-}
 
