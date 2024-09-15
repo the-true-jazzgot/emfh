@@ -1,12 +1,12 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { Popover, PopoverAnchor, PopoverContent } from "../ui_elements/popover";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../ui_elements/popover";
 import { format, isValid, parse } from "date-fns";
 import { Input } from "../ui_elements/input";
 import { Button } from "../ui/Button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui_elements/calendar";
 
-interface DateInputProps {
+export interface DateInputProps {
   date: Date | undefined, 
   setDate: Dispatch<SetStateAction<Date | undefined>>
 }
@@ -14,7 +14,7 @@ interface DateInputProps {
 export function DateInput({date, setDate}:DateInputProps) {
   const [inputValue, setInputValue] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  
+
   useEffect(()=>{
     if(!!inputValue){
       const parsedDate = parse(inputValue, "P", new Date());
@@ -48,13 +48,9 @@ export function DateInput({date, setDate}:DateInputProps) {
             onFocus={()=>setIsOpen(true)}
           />
         </PopoverAnchor>
-        <Button
-          type="button"
-          fn={() => {setIsOpen(!isOpen)}}
-          classList="absolute right-0 top-0 h-full rounded-l-none"
-          text=""
-          children={[<CalendarIcon className="h-4 w-4" key={"a"}/>]}
-        />
+        <PopoverTrigger className="absolute right-0 top-0 h-full rounded-l-none">
+          <CalendarIcon className="h-4 w-4" />
+        </PopoverTrigger>
       </div>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
