@@ -1,58 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { AuthData, EMCategory, Task, TaskType } from "../types";
-import { axiosInstance, getRequestSettings } from "./authentification.service";
+import { AuthData, EMCategory, Task, TaskType } from "../../types";
+import { axiosInstance, getRequestSettings } from "../authentification.service";
 import { Observable, Subject } from "rxjs";
-
-interface ChecklistDataContract {
-  completed: boolean,
-  text: string,
-  id: string
-};
-
-type Attribute = "str" | "int" | "per" | "con";
-
-export interface TaskDataContract { //TODO: verify and extend
-  _id: string,
-  userId: string,
-  text:string,
-  type:TaskType,
-  notes:string,
-  date: Date,
-  tags:[],
-  value:10,
-  priority:1,
-  attribute:Attribute,
-  challenge:{},
-  group:{
-    assignedUsers:any[],
-    approval:{
-      required:boolean,
-      approved:boolean,
-      requested:boolean
-    }
-  },
-  reminders:any[],
-  createdAt:Date,
-  updatedAt:Date,
-  checklist: ChecklistDataContract[],
-  id:string
-};
-
-interface TaskListContract {
-  success:boolean,
-  data:TaskDataContract[],
-  notifications:any[],
-  userV: number,
-  appVersion: string
-}
+import { AllTaskTypesDataContract, TaskListContract, TodoTaskDataContract } from "./task.datacontracts";
 
 const getTodos = async (authData:AuthData | undefined, type:string | undefined):Promise<any[]> => {
   if(!authData) {
     throw Error("Habitica API token missing or broken, login to get it");
   }
 
-  let requestSettings:AxiosRequestConfig<TaskDataContract[]> = getRequestSettings(authData);
+  let requestSettings:AxiosRequestConfig<AllTaskTypesDataContract[]> = getRequestSettings(authData);
   !!type ? requestSettings = {...requestSettings, params: {type: type.toString() +"s"}} :null;
 
   const response:AxiosResponse<TaskListContract> = await axiosInstance.get("/tasks/user", requestSettings);
@@ -81,9 +39,9 @@ export function toDosQuery(type?:TaskType) {
   });
 };
 
-export  function convertServerDataToLocalData(rawTasks:TaskDataContract[], habits:boolean, dailies: boolean, todos: boolean):Task[] {
-  const data:TaskDataContract[] = filterDataByType(habits, dailies, todos, rawTasks);
-  return data.map((item: { id: string, text: string, date?: Date, type: TaskType }):Task => ({ //task data contract
+export  function convertServerDataToLocalData(rawTasks:AllTaskTypesDataContract[], habits:boolean, dailies: boolean, todos: boolean):Task[] {
+  const data:AllTaskTypesDataContract[] = filterDataByType(habits, dailies, todos, rawTasks);
+  return data.map((item: { id: string, text: string, type: TaskType, date?: Date, nextDue: Date[] }):Task => ({ //task data contract
     id: item.id, name: item.text, category: "uncategorized", date: item.date, type: item.type
   }));
 };
@@ -92,9 +50,9 @@ export const filterDataByCategory = (category:EMCategory, allTasks:Task[]):Task[
   return allTasks?.filter(item => item.category === category) || [] as Task[];
 }
 
-export const filterDataByType = (habits:boolean, dailies:boolean, todos:boolean, allTasks:TaskDataContract[]):TaskDataContract[] => {
-  let returnTasks:TaskDataContract[] = [];
-  let filteredTasks: TaskDataContract[] = [];
+export const filterDataByType = (habits:boolean, dailies:boolean, todos:boolean, allTasks:AllTaskTypesDataContract[]):AllTaskTypesDataContract[] => {
+  let returnTasks:AllTaskTypesDataContract[] = [];
+  let filteredTasks: AllTaskTypesDataContract[] = [];
   if(habits) {
     filteredTasks = allTasks?.filter(item => item.type === "habit");
     returnTasks = [...filteredTasks];
@@ -153,30 +111,30 @@ export const getTasksFactory: Record<EMCategory, () => Observable<Task[]>> = {
   "q4": tasksQ4.receive
 }
 
-function getUpdateTaskParameters(localtask: Task, servertask: TaskDataContract, authData: AuthData): AxiosRequestConfig {
+function getUpdateTodoTaskParameters(localtask: Task, servertask: TodoTaskDataContract, authData: AuthData): AxiosRequestConfig {
   let queryBodyParameters:any = { data: {}};
   if(!!localtask.date && localtask.date !== servertask.date) queryBodyParameters.data.date = localtask.date;
   return {...getRequestSettings(authData), ...queryBodyParameters};
 }
 
-const updateTask = async (localtask:Task):Promise<TaskDataContract> => {
+const updateTodoTask = async (localtask:Task):Promise<TodoTaskDataContract> => {
   const queryClient = useQueryClient();
   const authData:AuthData | undefined = queryClient.getQueryData(['authData']);
   if(!authData) {
     throw new Error("No authentication data - login to reciveive");
   }
-  const servertask:TaskDataContract | undefined = queryClient.getQueryData(["todos", authData.username, localtask.id]); //TODO: useQuery insted of getQueryData
+  const servertask:TodoTaskDataContract | undefined = queryClient.getQueryData(["todos", authData.username, localtask.id]); //TODO: useQuery insted of getQueryData
   if(!servertask) {
     throw new Error("Task no longer exists on Habitica account");
   }
-  const response = await axiosInstance.put<TaskDataContract>(`/tasks/${localtask.id}`, getUpdateTaskParameters(localtask, servertask, authData));
+  const response = await axiosInstance.put<TodoTaskDataContract>(`/tasks/${localtask.id}`, getUpdateTodoTaskParameters(localtask, servertask, authData));
   return response.data;
 }
 
 export function useTasksMutation(){
   const queryClient = useQueryClient(); //invalidateQuery
   return useMutation({
-    mutationFn: (task:Task) => updateTask(task),
+    mutationFn: (task:Task) => updateTodoTask(task),
     //TODO: invalidateQuery
   });
 }
