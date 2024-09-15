@@ -30,7 +30,6 @@ function parseResponse(response:LoginDataContract):AuthData{
 }
 
 const getAuthenticationData = async (userCredentials:UserCredentials):Promise<AuthData> => {
-  console.log("getting auth data for: " + userCredentials.username);
   const response = await axiosInstance.post<LoginDataContract>("/user/auth/local/login", {...userCredentials});
   return parseResponse(response.data);
 }

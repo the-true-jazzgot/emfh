@@ -55,13 +55,9 @@ const getTodos = async (authData:AuthData | undefined, type:string | undefined):
   let requestSettings:AxiosRequestConfig<TaskDataContract[]> = getRequestSettings(authData);
   !!type ? requestSettings = {...requestSettings, params: {type: type.toString() +"s"}} :null;
 
-  let tmpType;
-  !!type ? tmpType = type.toString() +"s" : tmpType = "no-type";
-  console.log("Getting tasks data for type: " + tmpType + " and user: " + authData.username);
-
   const response:AxiosResponse<TaskListContract> = await axiosInstance.get("/tasks/user", requestSettings);
 
-  console.log(response);
+  console.log(response.data);
 
   return response.data.data;
 };
@@ -75,7 +71,6 @@ export function toDosQuery(type?:TaskType) {
   const queryClient = useQueryClient();
   const authData:AuthData | undefined = queryClient.getQueryData(['authData']);
   const queryKey = type? todoKeys.type(authData?.username, type) : todoKeys.all(authData?.username);
-  console.log("requesting task data or cache with queryKey: "+queryKey);
 
   return useQuery({
     queryKey: queryKey,

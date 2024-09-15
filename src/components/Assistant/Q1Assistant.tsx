@@ -1,12 +1,7 @@
-import { useEffect } from "react";
 import { Task } from "../../types";
 import { TaskLabel } from "../TaskLabel/TaskLabel";
 
 export function Q1Assistant({tasks}:{tasks: Task[] | undefined}) {
-  useEffect(()=>{
-    console.log(tasks);
-  }, [tasks]);
-
   return (
     <>
     <h4>Assistant for Q1</h4>
