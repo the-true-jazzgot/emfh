@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Popover, PopoverAnchor, PopoverContent } from "../ui_elements/popover";
 import { format, isValid, parse } from "date-fns";
 import { Input } from "../ui_elements/input";
@@ -6,8 +6,12 @@ import { Button } from "../ui/Button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui_elements/calendar";
 
-export function DateInput() {
-  const [date, setDate] = useState<Date>();
+interface DateInputProps {
+  date: Date | undefined, 
+  setDate: Dispatch<SetStateAction<Date | undefined>>
+}
+
+export function DateInput({date, setDate}:DateInputProps) {
   const [inputValue, setInputValue] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   
