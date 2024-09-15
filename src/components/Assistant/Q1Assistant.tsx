@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Task } from "../../types";
-import { TaskLabel } from "../TaskLabel";
+import { TaskLabel } from "../TaskLabel/TaskLabel";
 
 export function Q1Assistant({tasks}:{tasks: Task[] | undefined}) {
   useEffect(()=>{

@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useState } from "react";
 import { useCredentialData, UserCredentials } from "../services/authentification.service";
 import { toDosQuery } from "../services/tasks.service";
-import { Button } from "./ui_elements/Button";
+import { Button } from "./ui/Button";
 
 export function LoginForm() {
   const [ credentials, setCredentials ] = useState<UserCredentials>();

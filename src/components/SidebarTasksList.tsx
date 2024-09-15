@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { EMCategory, Task } from "../types";
-import { TaskLabel } from "./TaskLabel";
+import { TaskLabel } from "./TaskLabel/TaskLabel";
 import { useDroppable } from "@dnd-kit/core";
 import { getTasksFactory } from "../services/tasks.service";
 
