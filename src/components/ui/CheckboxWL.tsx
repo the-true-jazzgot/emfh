@@ -1,6 +1,6 @@
 import { Checkbox } from "@/components/ui_elements/checkbox"
 
-interface CheckboxWithLabelProps {
+export interface CheckboxWithLabelProps {
   id: string
   label: string
   checked?: boolean

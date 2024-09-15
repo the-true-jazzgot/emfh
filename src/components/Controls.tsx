@@ -4,7 +4,7 @@ import { EMCategory, Task, TaskType } from "../types";
 import { Button } from "./ui/Button";
 import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery } from "../services/tasks.service";
 import { moveTask, TasksListAction } from "../services/dnd.service";
-import { CheckboxWL } from "./ui_elements/CheckboxWL";
+import { CheckboxWL } from "./ui/CheckboxWL";
 
 export function Controls() {
   const [ areHabits, setAreHabits] = useState<boolean>(false);
@@ -17,7 +17,7 @@ export function Controls() {
   const [q3, setQ3] = useState<Task[]>([]);
   const [q4, setQ4] = useState<Task[]>([]);
 
-  function setQueryCategory():TaskType | undefined { //if only one category is selected pull only it, otherwise pull all
+  function setQueryCategory():TaskType | undefined { //if only one category is selected pull only that one, otherwise pull all
     if(areHabits && !areDailies && !areTodos) return "habit";
     if(!areHabits && areDailies && !areTodos) return "daily";
     if(!areHabits && !areDailies && areTodos) return "todo";
