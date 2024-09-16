@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { habiticaAPIconf } from "../config/APIconfig";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AuthData } from "../types";
+import { createContext } from "react";
 
 interface LoginDataContract {
   appVersion: string,
@@ -57,3 +58,5 @@ export function getRequestSettings(authData:AuthData):AxiosRequestConfig {
   
   return habiticaAPIconf;
 }
+
+export const AuthContext = createContext<AuthData | undefined>(undefined);

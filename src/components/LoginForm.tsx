@@ -1,16 +1,12 @@
-import { MouseEvent, useEffect, useState } from "react";
-import { useCredentialData, UserCredentials } from "../services/authentification.service";
-import { toDosQuery } from "../services/task/tasks.service";
+import { MouseEvent, useContext, useState } from "react";
+import { AuthContext, UserCredentials } from "../services/authentification.service";
 import { Button } from "./ui/Button";
+import { AuthComp } from "./AuthComp";
+import { AuthData } from "@/types";
 
-export function LoginForm() {
-  const [ credentials, setCredentials ] = useState<UserCredentials>();
-  const { isSuccess, data, status, error } = useCredentialData({password: credentials?.password || "", username: credentials?.username || ""});
-  const { refetch} = toDosQuery();
-
-  useEffect(()=>{
-    refetch();
-  }, [data, status]);
+export function LoginForm({setAuthData}:{setAuthData: React.Dispatch<React.SetStateAction<AuthData | undefined>>}) {
+  const [credentials, setCredentials] = useState<UserCredentials>();
+  const authContext = useContext<AuthData | undefined>(AuthContext);
 
   function handleLogin(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
     e.preventDefault();
@@ -20,19 +16,15 @@ export function LoginForm() {
     });
   }
 
-  function handleLogout() {
+  function handleLogout():void {
     console.log("Log out clicked, authData in cache: ");
-    console.log(data);
-    refetch();
+    // console.log(data);
   }
 
   return (
-    <header className={"col-span-5 row-span-1" + (isSuccess? ' b':' a')}>
-      <form className={isSuccess ? "js-loggedIn" : "js-anonymous"}>
-      {status === "success" ? <>
-        <span className="font-bold mx-4">{data.username}</span>
-        <Button text={"Logout"} fn={handleLogout} type="reset"/>
-      </>:<>
+    <header className={"col-span-5 row-span-1"}>
+      <form>
+      {!authContext && <>
         <label htmlFor="email">
           <input type="email" name="email" id="email"></input>
         </label>  
@@ -40,8 +32,8 @@ export function LoginForm() {
           <input type="password" name="password" id="password"></input>
         </label>
         <Button text="Submit" fn={(e)=> {handleLogin(e)}} type="submit" />
-        <p>{status === "error" ? error.message : "Use your Habitica account credentials"}</p>
       </>}
+      {!!credentials && <AuthComp credentials={credentials} setAuthData={setAuthData} logoutFn={handleLogout} />}
       </form>
     </header>
   )
