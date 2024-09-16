@@ -56,7 +56,7 @@ export interface DailyTaskDataContract extends TaskDataContract {
   streak: number,
   daysOfMonth: any[],
   weeksOfMonth: any[],
-  nextDue: Date[],
+  nextDue?: Date[],
   yesterDaily: boolean,
   history: {}[],
   completed: boolean,

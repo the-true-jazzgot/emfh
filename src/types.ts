@@ -7,7 +7,9 @@ export type Task = {
     name: string,
     category: EMCategory,
     type: TaskType,
-    date?: Date
+    date?: Date,
+    validated: boolean,
+    validationDate?: Date
 }
 
 export type AuthData = {

@@ -41,8 +41,8 @@ export function toDosQuery(type?:TaskType) {
 
 export  function convertServerDataToLocalData(rawTasks:AllTaskTypesDataContract[], habits:boolean, dailies: boolean, todos: boolean):Task[] {
   const data:AllTaskTypesDataContract[] = filterDataByType(habits, dailies, todos, rawTasks);
-  return data.map((item: { id: string, text: string, type: TaskType, date?: Date, nextDue: Date[] }):Task => ({ //task data contract
-    id: item.id, name: item.text, category: "uncategorized", date: item.date, type: item.type
+  return data.map((item: { id: string, text: string, type: TaskType, date?: Date, nextDue?: Date[] }):Task => ({ //task data contract
+    id: item.id, name: item.text, category: "uncategorized", date: !!item.nextDue ? item.nextDue[0] : item.date, type: item.type, validated: false
   }));
 };
 
