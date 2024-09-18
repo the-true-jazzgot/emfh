@@ -2,10 +2,10 @@ import { Dispatch, useEffect, useState } from "react";
 
 export function usePersistState<T>(defaultValue: T, key: string):[T, Dispatch<T>] {
   const [value, setValue] = useState(() => {
-    const stickyValue:string | null = window.localStorage.getItem(key);
+    const storageValue:string | null = window.localStorage.getItem(key);
 
-    return stickyValue !== null
-      ? JSON.parse(stickyValue)
+    return storageValue !== null
+      ? JSON.parse(storageValue)
       : defaultValue;
   });
 
@@ -14,8 +14,4 @@ export function usePersistState<T>(defaultValue: T, key: string):[T, Dispatch<T>
   }, [key, value]);
 
   return [value, setValue];
-}
-
-export function useSessionState() {
-
 }

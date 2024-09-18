@@ -43,7 +43,7 @@ export function DateInput({date, setDate}:DateInputProps) {
             placeholder="Pick a date"
             value={inputValue}
             onChange={e => setInputValue(e?.target.value)}
-            className="w-[280px] pr-10"
+            className="w-full pr-10"
             onFocus={()=>setIsOpen(true)}
           />
         </PopoverAnchor>
