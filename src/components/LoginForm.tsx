@@ -17,8 +17,8 @@ export function LoginForm({setAuthData}:{setAuthData: React.Dispatch<React.SetSt
   }
 
   function handleLogout():void {
-    console.log("Log out clicked, authData in cache: ");
-    // console.log(data);
+    window.sessionStorage.removeItem("emfh");
+    setAuthData(undefined);
   }
 
   return (
@@ -33,7 +33,7 @@ export function LoginForm({setAuthData}:{setAuthData: React.Dispatch<React.SetSt
         </label>
         <Button text="Submit" fn={(e)=> {handleLogin(e)}} type="submit" />
       </>}
-      {!!credentials && <AuthComp credentials={credentials} setAuthData={setAuthData} logoutFn={handleLogout} />}
+      {!!AuthContext && <AuthComp credentials={credentials} setAuthData={setAuthData} logoutFn={handleLogout} />}
       </form>
     </header>
   )

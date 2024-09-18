@@ -59,4 +59,10 @@ export function getRequestSettings(authData:AuthData):AxiosRequestConfig {
   return habiticaAPIconf;
 }
 
+export function getSessionAuthData():AuthData | undefined {
+  const sessionData:string | null = window.sessionStorage.getItem("emfh");
+
+   if(sessionData !== null) return JSON.parse(sessionData);
+};
+
 export const AuthContext = createContext<AuthData | undefined>(undefined);

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { AuthData } from './types';
-import { AuthContext } from './services/authentification.service';
+import { AuthContext, getSessionAuthData } from './services/authentification.service';
 import { addTaskToComponent } from './services/dnd.service';
 import { LoginForm } from './components/LoginForm';
 import { SidebarTasksList } from './components/SidebarTasksList';
@@ -20,6 +20,16 @@ function App() {
         }
     })
   );
+
+  useEffect(() => {
+    const sessionAuthData = getSessionAuthData();
+    if(!!sessionAuthData) setAuthData(sessionAuthData);
+  }, []);
+
+  useEffect(() => {
+    if(!!authData)
+      window.sessionStorage.setItem("emfh", JSON.stringify(authData));
+  }, [authData]);
 
   return (
     <div className='grid grid-cols-5 grid-rows-12 gap-4 inset-0 m-0 p-0'>
