@@ -1,19 +1,12 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { assistant, TasksMatrix } from "../services/assistant.service";
 import { AuthData, EMCategory, Task, TaskType } from "../types";
 import { Button } from "./ui/Button";
 import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery } from "../services/task/tasks.service";
 import { moveTask, TasksListAction } from "../services/dnd.service";
 import { CheckboxWL } from "./ui/CheckboxWL";
-import { useQueryClient } from "@tanstack/react-query";
-
-interface AllCategories {
-  q1: Task[],
-  q2: Task[],
-  q3: Task[],
-  q4: Task[],
-  uncategorized: Task[]
-}
+import { AuthContext } from "@/services/authentification.service";
+import { usePersistState } from "@/services/customHooks";
 
 interface Quadrants {
   get: Task[],
@@ -21,27 +14,20 @@ interface Quadrants {
   send: (tasks: Task[]) => void
 }
 
+const errorNoAuth = new Error("No authentication data - login to reciveive");
+
 export function Controls() {
+  const authContext = useContext<AuthData | undefined>(AuthContext);
+  const [ allTasks, setAllTasks] = usePersistState<Task[]>([], !!authContext ? authContext.username : "anonymous");
   const [ areHabits, setAreHabits] = useState<boolean>(false);
   const [ areDailies, setAreDailies ] = useState<boolean>(false);
   const [ areTodos, setAreTodos ] = useState<boolean>(true);
-  const { data, status } = toDosQuery(setQueryCategory());
+  const { data } = toDosQuery(setQueryCategory());
   const [uncategorized, setUncategorized] = useState<Task[]>([]);
   const [q1, setQ1] = useState<Task[]>([]);
   const [q2, setQ2] = useState<Task[]>([]);
   const [q3, setQ3] = useState<Task[]>([]);
   const [q4, setQ4] = useState<Task[]>([]);
-
-  const initialAllCategoriesObject:AllCategories = {
-    q1:[],
-    q2:[],
-    q3:[],
-    q4:[],
-    uncategorized: []
-  }
-
-  const [allCategories, setAllCategories] = useState<AllCategories>(initialAllCategoriesObject);
-  const queryClient = useQueryClient();
 
   function setQueryCategory():TaskType | undefined { //if only one category is selected pull only that one, otherwise pull all
     if(areHabits && !areDailies && !areTodos) return "habit";
@@ -78,51 +64,45 @@ export function Controls() {
     }
   }
 
-  function getUserName():string {
-    const authData:AuthData | undefined = queryClient.getQueryData(['authData']);
-  
-    if(!authData) throw new Error("No authentication data - login to reciveive");
-    return authData.username;
-  }
-
   function handleCategoryListChange(category: EMCategory):void {
-    quadrantsFactory[category].send(q1);
-    
-    let newAllCategories = allCategories;
-    newAllCategories[category] = quadrantsFactory[category].get;
-    setAllCategories(newAllCategories);
-    localStorage.setItem(getUserName(), JSON.stringify(allCategories));
-    console.log(allCategories);
+    quadrantsFactory[category].send(quadrantsFactory[category].get);
   }
+  
+  useEffect(() => {
+    if(!authContext) throw errorNoAuth;
+    if(!!data) {
+      const receivedData:Task[] = convertServerDataToLocalData(data, allTasks, areHabits, areDailies, areTodos);
+      setAllTasks(receivedData);
+    }
+  }, [data, areDailies, areHabits, areTodos]);
 
   useEffect(()=>{
-    handleCategoryListChange("q1");
+    setQ1(filterDataByCategory("q1", allTasks));
+    setQ2(filterDataByCategory("q2", allTasks));
+    setQ3(filterDataByCategory("q3", allTasks));
+    setQ4(filterDataByCategory("q4", allTasks));
+    setUncategorized(filterDataByCategory("uncategorized", allTasks));
+  }, [allTasks]);
+
+  useEffect(()=>{
+    if(!!data) handleCategoryListChange("q1");
   }, [q1]);
 
   useEffect(()=>{
-    handleCategoryListChange("q2");
+    if(!!data) handleCategoryListChange("q2");
   }, [q2]);
 
   useEffect(()=>{
-    handleCategoryListChange("q3");
+    if(!!data) handleCategoryListChange("q3");
   }, [q3]);
 
   useEffect(()=>{
-    handleCategoryListChange("q4");
+    if(!!data) handleCategoryListChange("q4");
   }, [q4]);
 
   useEffect(()=>{
-    handleCategoryListChange("uncategorized");
+    if(!!data) handleCategoryListChange("uncategorized");
   }, [uncategorized]);
-  
-  useEffect(() => {
-    const receivedData = convertServerDataToLocalData(data, areHabits, areDailies, areTodos);
-    setQ1(filterDataByCategory("q1", receivedData));
-    setQ2(filterDataByCategory("q2", receivedData));
-    setQ3(filterDataByCategory("q3", receivedData));
-    setQ4(filterDataByCategory("q4", receivedData));
-    setUncategorized(filterDataByCategory("uncategorized", receivedData));
-  }, [data, status, areDailies, areHabits, areTodos]);
 
   useEffect(() => {
     const subscription = moveTask.receive().subscribe(
@@ -130,22 +110,24 @@ export function Controls() {
         const from = quadrantsFactory[action.moveFrom];
         const to = quadrantsFactory[action.moveTo];
         const taskToMove:Task | undefined = from.get.find((item:Task) => item.id === action.taskId);
-        let moveToTasks:Task[] = [];
+        const moveFromTasks:Task[] = from.get.filter((item:Task) => item.id !== action.taskId) as Task[];
+        let moveToTasks:Task[] = [...to.get];
 
-        if(!!to.get) to.get.forEach(item => moveToTasks.push(item));
         if(!!taskToMove) {
           taskToMove.category = action.moveTo;
           moveToTasks.push(taskToMove);
         };
-        from.set(from.get.filter((item:Task) => item.id !== action.taskId) as Task[]);
+
+        from.set(moveFromTasks);
         to.set(moveToTasks);
+        setAllTasks([...q1, ...q2, ...q3, ...q4, ...uncategorized]);
       }
     );
 
     return () => {
       subscription.unsubscribe();
     }
-  }, [data, q1, q2, q3, q4, uncategorized]);
+  }, [q1, q2, q3, q4, uncategorized]);
 
   
   function autoresolveQ1(q1: Task[]) {

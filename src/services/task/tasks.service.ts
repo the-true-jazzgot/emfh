@@ -14,9 +14,6 @@ const getTodos = async (authData:AuthData | undefined, type:string | undefined):
   !!type ? requestSettings = {...requestSettings, params: {type: type.toString() +"s"}} :null;
 
   const response:AxiosResponse<TaskListContract> = await axiosInstance.get("/tasks/user", requestSettings);
-
-  console.log(response.data);
-
   return response.data.data;
 };
 
@@ -34,23 +31,34 @@ export function toDosQuery(type?:TaskType) {
     queryKey: queryKey,
     queryFn:  async () => await getTodos(authData, type),
     enabled: true,
-    initialData: [] as any[],
     refetchInterval: 900000
   });
 };
 
-export  function convertServerDataToLocalData(rawTasks:AllTaskTypesDataContract[], habits:boolean, dailies: boolean, todos: boolean):Task[] {
-  const data:AllTaskTypesDataContract[] = filterDataByType(habits, dailies, todos, rawTasks);
-  return data.map((item: { id: string, text: string, type: TaskType, date?: Date, nextDue?: Date[] }):Task => ({ //task data contract
-    id: item.id, name: item.text, category: "uncategorized", date: !!item.nextDue ? item.nextDue[0] : item.date, type: item.type, validated: false
-  }));
+export  function convertServerDataToLocalData(rawTasks:AllTaskTypesDataContract[], storageData:Task[], habits:boolean, dailies: boolean, todos: boolean):Task[] {
+  const data:AllTaskTypesDataContract[] = filterDataByType(rawTasks, habits, dailies, todos);
+  let localData:Task[] = [];
+
+  data.forEach(task => {
+    const storageTask = storageData.find(item => item.id === task.id);
+    let localTask:Task;
+    if(!!storageTask) {
+      localTask = storageTask;
+    } else {
+      localTask = {
+        id: task.id, name: task.text, category: "uncategorized", date: !!task.nextDue ? task.nextDue[0] : task.date, type: task.type, validated: false
+      }
+    }
+    localData.push(localTask);
+  });
+  return localData;
 };
 
 export const filterDataByCategory = (category:EMCategory, allTasks:Task[]):Task[] => {
   return allTasks?.filter(item => item.category === category) || [] as Task[];
 }
 
-export const filterDataByType = (habits:boolean, dailies:boolean, todos:boolean, allTasks:AllTaskTypesDataContract[]):AllTaskTypesDataContract[] => {
+export const filterDataByType = (allTasks:AllTaskTypesDataContract[], habits:boolean, dailies:boolean, todos:boolean):AllTaskTypesDataContract[] => {
   let returnTasks:AllTaskTypesDataContract[] = [];
   let filteredTasks: AllTaskTypesDataContract[] = [];
   if(habits) {
