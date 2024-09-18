@@ -28,12 +28,14 @@ interface TaskDataContract {
   byHabitica: boolean
 };
 
-export interface TodoTaskDataContract extends TaskDataContract {
+interface TodoTaskDataFields {
   date?: Date,
   completed: boolean,
   collapseChecklist: boolean,
   checklist: ChecklistDataContract[],
 }
+
+export interface TodoTaskDataContract extends TodoTaskDataFields, TaskDataContract {};
 
 type Frequency = "monthly" | "weekly" | "daily";
 
@@ -47,7 +49,7 @@ interface Repeat {
   su: boolean
 }
 
-export interface DailyTaskDataContract extends TaskDataContract {
+interface DailyTaskDataFields {
   checklist: ChecklistDataContract[],
   frequency: Frequency,
   everyX: number,
@@ -64,7 +66,9 @@ export interface DailyTaskDataContract extends TaskDataContract {
   isDue: boolean
 }
 
-export interface HabitTaskDataContract extends TaskDataContract {
+export interface DailyTaskDataContract extends TaskDataContract, DailyTaskDataFields {};
+
+interface HabitTaskDataFields {
   up: boolean,
   down: boolean,
   counterUp: number,
@@ -73,12 +77,22 @@ export interface HabitTaskDataContract extends TaskDataContract {
   history: {}[]
 }
 
-export interface AllTaskTypesDataContract extends HabitTaskDataContract, DailyTaskDataContract, TodoTaskDataContract {};
+export interface HabitTaskDataContract extends TaskDataContract, HabitTaskDataFields {};
+
+export interface AllTaskTypesDataContract extends TaskDataContract, Partial<HabitTaskDataFields>, Partial<DailyTaskDataFields>, Partial<TodoTaskDataFields> {};
 
 export interface TaskListContract {
   success:boolean,
-  data:AllTaskTypesDataContract[],
+  data:(HabitTaskDataContract | DailyTaskDataContract | TodoTaskDataContract)[],
   notifications:any[],
-  userV: number,
+  userV:number,
+  appVersion: string
+}
+
+export interface SingleTaskDataContract {
+  success:boolean,
+  data:HabitTaskDataContract | DailyTaskDataContract | TodoTaskDataContract,
+  notifications:any[],
+  userV:number,
   appVersion: string
 }
