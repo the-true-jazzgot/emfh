@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { AuthData, EMCategory, Task, TaskType } from "../../types";
-import { axiosInstance, getRequestSettings } from "../authentification.service";
+import { AuthContext, axiosInstance, getRequestSettings } from "../authentification.service";
 import { Observable, Subject } from "rxjs";
 import { AllTaskTypesDataContract, TaskListContract, TodoTaskDataContract } from "./task.datacontracts";
+import { useContext } from "react";
 
 const getTodos = async (authData:AuthData | undefined, type:string | undefined):Promise<any[]> => {
   if(!authData) {
@@ -23,8 +24,7 @@ export const todoKeys = {
 }
 
 export function toDosQuery(type?:TaskType) {
-  const queryClient = useQueryClient();
-  const authData:AuthData | undefined = queryClient.getQueryData(['authData']);
+  const authData:AuthData | undefined = useContext<AuthData | undefined>(AuthContext);
   const queryKey = type? todoKeys.type(authData?.username, type) : todoKeys.all(authData?.username);
 
   return useQuery({
