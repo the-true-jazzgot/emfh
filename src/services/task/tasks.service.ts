@@ -145,16 +145,22 @@ const updateTodoTask = async (localtask: Task, authData:AuthData | undefined):Pr
   }
   const params = getUpdateTodoTaskParameters(localtask, authData);
   const response = await axiosInstance({method: 'put', url: `${params.baseURL}/tasks/${localtask.id}`, headers: params.headers, data: params.data});
-  return response.data;
+  return response.data.data;
 }
 
-export function useTasksMutation(authData:AuthData | undefined){
+export function useTodoTasksMutation(authData:AuthData | undefined){
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (localtask:Task) => await updateTodoTask(localtask, authData),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({
-        queryKey: ['todos', authData?.username]
+        queryKey: todoKeys.all(authData?.username),
+      });
+      queryClient.invalidateQueries({
+        queryKey: todoKeys.type(authData?.username, response.type),
+      });
+      queryClient.invalidateQueries({
+        queryKey: todoKeys.single(authData?.username, response.id)
       });
     }
   });

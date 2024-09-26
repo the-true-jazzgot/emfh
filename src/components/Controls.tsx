@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react
 import { assistant, TasksMatrix } from "../services/assistant.service";
 import { AuthData, EMCategory, Task, TaskType } from "../types";
 import { Button } from "./ui/Button";
-import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery, useTasksMutation } from "../services/task/tasks.service";
+import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery, useTodoTasksMutation } from "../services/task/tasks.service";
 import { moveTask, TasksListAction } from "../services/dnd.service";
 import { CheckboxWL } from "./ui/CheckboxWL";
 import { AuthContext } from "@/services/authentification.service";
@@ -28,7 +28,7 @@ export function Controls() {
   const [q2, setQ2] = useState<Task[]>([]);
   const [q3, setQ3] = useState<Task[]>([]);
   const [q4, setQ4] = useState<Task[]>([]);
-  const {mutate} = useTasksMutation(authContext);
+  const {mutate} = useTodoTasksMutation(authContext);
 
   function setQueryCategory():TaskType | undefined { //if only one category is selected pull only that one, otherwise pull all
     if(areHabits && !areDailies && !areTodos) return "habit";
