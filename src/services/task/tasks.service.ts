@@ -37,25 +37,31 @@ export function toDosQuery(type?:TaskType, id?:string) {
 
   return useQuery({
     queryKey: queryKey,
-    queryFn:  async () => await getTodos(authData, type),
+    queryFn:  async () => await getTodos(authData, type, id),
     enabled: true,
-    refetchInterval: 900000
+    refetchInterval: 900000,
+    refetchOnWindowFocus: false
   });
 };
 
 export  function convertServerDataToLocalData(rawTasks:AllTaskTypesDataContract[], storageData:Task[], habits:boolean, dailies: boolean, todos: boolean):Task[] {
   const data:AllTaskTypesDataContract[] = filterDataByType(rawTasks, habits, dailies, todos);
-  let localData:Task[] = [];
+  const localData:Task[] = [];
 
   data.forEach(serverTask => {
     const storageTask = storageData.find(item => item.id === serverTask.id);
-    let localTask:Task;
+    let localTask:Task = {
+      id: serverTask.id, 
+      name: serverTask.text, 
+      l_category: "uncategorized", 
+      date: !!serverTask.nextDue ? serverTask.nextDue[0] : serverTask.date, 
+      type: serverTask.type, 
+      l_validated: false
+    }
     if(!!storageTask) {
-      localTask = storageTask;
-    } else {
-      localTask = {
-        id: serverTask.id, name: serverTask.text, category: "uncategorized", date: !!serverTask.nextDue ? serverTask.nextDue[0] : serverTask.date, type: serverTask.type, validated: false
-      }
+      localTask.l_category = storageTask.l_category;
+      localTask.l_validated = storageTask.l_validated;
+      localTask.l_validationDate = storageTask.l_validationDate;
     }
     localData.push(localTask);
   });
@@ -63,7 +69,7 @@ export  function convertServerDataToLocalData(rawTasks:AllTaskTypesDataContract[
 };
 
 export const filterDataByCategory = (category:EMCategory, allTasks:Task[]):Task[] => {
-  return allTasks?.filter(item => item.category === category) || [] as Task[];
+  return allTasks?.filter(item => item.l_category === category) || [] as Task[];
 }
 
 export const filterDataByType = (allTasks:AllTaskTypesDataContract[], habits:boolean, dailies:boolean, todos:boolean):AllTaskTypesDataContract[] => {
@@ -127,30 +133,25 @@ export const getTasksFactory: Record<EMCategory, () => Observable<Task[]>> = {
   "q4": tasksQ4.receive
 }
 
-function getUpdateTodoTaskParameters(localtask: Task, servertask: TodoTaskDataContract, authData: AuthData): AxiosRequestConfig {
+function getUpdateTodoTaskParameters(localtask: Task, authData: AuthData): AxiosRequestConfig {
   let queryBodyParameters:any = { data: {}};
-  if(!!localtask.date && localtask.date !== servertask.date) queryBodyParameters.data.date = localtask.date;
+  queryBodyParameters.data.date = localtask.date;
   return {...getRequestSettings(authData), ...queryBodyParameters};
 }
 
-const updateTodoTask = async (localtask:Task):Promise<TodoTaskDataContract> => {
-  const authData:AuthData | undefined = useContext<AuthData | undefined>(AuthContext);
+const updateTodoTask = async (localtask: Task, authData:AuthData | undefined):Promise<TodoTaskDataContract> => {
   if(!authData) {
     throw new Error("No authentication data - login to reciveive");
   }
-  const servertask:any = toDosQuery(undefined,localtask.id);
-  if(!servertask) {
-    throw new Error("Task no longer exists on Habitica account");
-  }
-  const response = await axiosInstance.put<TodoTaskDataContract>(`/tasks/${localtask.id}`, getUpdateTodoTaskParameters(localtask, servertask, authData));
+  const params = getUpdateTodoTaskParameters(localtask, authData);
+  const response = await axiosInstance({method: 'put', url: `${params.baseURL}/tasks/${localtask.id}`, headers: params.headers, data: params.data});
   return response.data;
 }
 
-export function useTasksMutation(){
+export function useTasksMutation(authData:AuthData | undefined){
   const queryClient = useQueryClient();
-  const authData:AuthData | undefined = useContext<AuthData | undefined>(AuthContext);
   return useMutation({
-    mutationFn: (task:Task) => updateTodoTask(task),
+    mutationFn: async (localtask:Task) => await updateTodoTask(localtask, authData),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['todos', authData?.username]

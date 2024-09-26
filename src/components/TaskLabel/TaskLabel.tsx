@@ -15,7 +15,7 @@ export function TaskLabel({task}:{task:Task}) {
   };
   
   return (
-    <article id={task.id} data-category={task.category as EMCategory} className="relative rounded bg-white font-bold my-2 p-2 text-sm text-habitxt" ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <article id={task.id} data-category={task.l_category as EMCategory} className="relative rounded bg-white font-bold my-2 p-2 text-sm text-habitxt" ref={setNodeRef} style={style} {...listeners} {...attributes}>
       <h3>{ task.name }</h3>
       <span className="inline-block text-xs right-2 absolute top-2">{ task.type }</span>
       {task.type === "todo" && <TodoTaskLabel task={task} />}

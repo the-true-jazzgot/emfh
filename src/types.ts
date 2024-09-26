@@ -5,11 +5,11 @@ export type TaskType = "habit" | "daily" | "todo" | "reward";
 export type Task = {
     id: string, 
     name: string,
-    category: EMCategory,
     type: TaskType,
     date?: Date,
-    validated: boolean,
-    validationDate?: Date
+    l_category: EMCategory,
+    l_validated: boolean,
+    l_validationDate?: Date
 }
 
 export type AuthData = {

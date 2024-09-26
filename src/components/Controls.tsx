@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react
 import { assistant, TasksMatrix } from "../services/assistant.service";
 import { AuthData, EMCategory, Task, TaskType } from "../types";
 import { Button } from "./ui/Button";
-import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery } from "../services/task/tasks.service";
+import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery, useTasksMutation } from "../services/task/tasks.service";
 import { moveTask, TasksListAction } from "../services/dnd.service";
 import { CheckboxWL } from "./ui/CheckboxWL";
 import { AuthContext } from "@/services/authentification.service";
@@ -28,6 +28,7 @@ export function Controls() {
   const [q2, setQ2] = useState<Task[]>([]);
   const [q3, setQ3] = useState<Task[]>([]);
   const [q4, setQ4] = useState<Task[]>([]);
+  const {mutate} = useTasksMutation(authContext);
 
   function setQueryCategory():TaskType | undefined { //if only one category is selected pull only that one, otherwise pull all
     if(areHabits && !areDailies && !areTodos) return "habit";
@@ -114,7 +115,7 @@ export function Controls() {
         let moveToTasks:Task[] = [...to.get];
 
         if(!!taskToMove) {
-          taskToMove.category = action.moveTo;
+          taskToMove.l_category = action.moveTo;
           moveToTasks.push(taskToMove);
         };
 
@@ -135,7 +136,10 @@ export function Controls() {
     q1.forEach(item => {
       item.date = currentdate;
     });
-    // useMutateQ1(q1);
+
+    q1.forEach(item => {
+      mutate(item);
+    });
   }
   
   const evaluateMatrix = ():void => {
