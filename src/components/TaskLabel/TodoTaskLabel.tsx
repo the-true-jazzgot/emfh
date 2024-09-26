@@ -13,6 +13,10 @@ export function TodoTaskLabel({task}:{task:Task}) {
     }
   }, [date]);
 
+  useEffect(()=>{
+    setDate(task.date);
+  }, [task]);
+
   return (
     <DateInput date={date} setDate={setDate} />
   )

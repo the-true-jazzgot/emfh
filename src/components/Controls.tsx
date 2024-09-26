@@ -136,7 +136,7 @@ export function Controls() {
     q1.forEach(item => {
       item.date = currentdate;
     });
-
+    setAllTasks([...q1, ...q2, ...q3, ...q4, ...uncategorized]);
     q1.forEach(item => {
       mutate(item);
     });
