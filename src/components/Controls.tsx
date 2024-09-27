@@ -6,7 +6,7 @@ import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, t
 import { moveTask, TasksListAction } from "../services/dnd.service";
 import { CheckboxWL } from "./ui/CheckboxWL";
 import { AuthContext } from "@/services/authentification.service";
-import { usePersistState } from "@/services/customHooks";
+import { usePersistState } from "@/hooks/use-persist-state";
 
 interface Quadrants {
   get: Task[],

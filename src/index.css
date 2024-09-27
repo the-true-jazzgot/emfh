@@ -65,12 +65,17 @@
 }
     
 @layer components {
-    .fixed_center {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
+  .fixed_center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .ToastViewport {
+    bottom: auto;
+    top: 0;
+  }  
 }
 @layer base {
   * {
