@@ -1,4 +1,4 @@
-import { Checkbox } from "@/components/ui_elements/checkbox"
+import { Checkbox } from "@/components/ui/ui_elements/checkbox"
 
 export interface CheckboxWithLabelProps {
   id: string
