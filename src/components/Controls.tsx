@@ -164,7 +164,7 @@ export function Controls() {
   }
 
   function isDisabled():boolean {
-    if(q1.length < 4 && q2.length < 1 && q3.length < 1 && q4.length < 1) return true;
+    if(q1.length < 1 && q2.length < 1 && q3.length < 1 && q4.length < 1) return true;
     return false;
   };
 
