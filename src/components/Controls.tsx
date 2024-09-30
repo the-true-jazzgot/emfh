@@ -7,6 +7,7 @@ import { moveTask, TasksListAction } from "../services/dnd.service";
 import { CheckboxWL } from "./ui/CheckboxWL";
 import { AuthContext } from "@/services/authentification.service";
 import { usePersistState } from "@/hooks/use-persist-state";
+import { useToast } from "@/hooks/use-toast";
 
 interface Quadrants {
   get: Task[],
@@ -29,6 +30,7 @@ export function Controls() {
   const [q3, setQ3] = useState<Task[]>([]);
   const [q4, setQ4] = useState<Task[]>([]);
   const {mutate} = useTodoTasksMutation(authContext);
+  const {toast} = useToast();
 
   function setQueryCategory():TaskType | undefined { //if only one category is selected pull only that one, otherwise pull all
     if(areHabits && !areDailies && !areTodos) return "habit";
@@ -139,6 +141,10 @@ export function Controls() {
     setAllTasks([...q1, ...q2, ...q3, ...q4, ...uncategorized]);
     q1.forEach(item => {
       mutate(item);
+    });
+    toast({
+      title: "All urgent and important task are updated",
+      description: `Set due date for today - ${currentdate.toLocaleDateString()}`,
     });
   }
   
