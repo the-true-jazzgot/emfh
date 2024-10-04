@@ -12,9 +12,11 @@ export function TodoTaskLabel({task}:{task:Task}) {
   useEffect(()=>{
     if(!date && !!task.date) {
       setDate(task.date);
-    } if(!!task.date && date != task.date) {
-      task.date = date;
-      mutate(task);
+    } else if(!!task.date && !!date) {
+      if(new Date(date).toISOString() !== new Date(task.date).toISOString()) {
+        task.date = date;
+        mutate(task);
+      }
     }
   }, [date]);
 
