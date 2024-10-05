@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
-import { assistant, TasksMatrix } from "../services/assistant.service";
+import { assistant, TasksMatrix } from "./Assistant/assistant.lib";
 import { AuthData, EMCategory, Task, TaskType } from "../types";
 import { Button } from "./ui/Button";
-import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery, useTodoTasksMutation } from "../services/task/tasks.service";
-import { moveTask, TasksListAction } from "../services/dnd.service";
+import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery, useTodoTasksMutation } from "@/components/TaskLabel/lib/tasks.fn";
+import { moveTask, TasksListAction } from "./containers/dnd.lib";
 import { CheckboxWL } from "./ui/CheckboxWL";
-import { AuthContext } from "@/services/authentification.service";
+import { AuthContext } from "@/lib/authentification";
 import { usePersistState } from "@/hooks/use-persist-state";
 import { useToast } from "@/hooks/use-toast";
 

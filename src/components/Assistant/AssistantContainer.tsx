@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Q1Assistant } from "./Q1Assistant";
-import { assistant, TasksMatrix } from "../../services/assistant.service";
+import { assistant, TasksMatrix } from "@/components/Assistant/assistant.lib";
 import { Button } from "../ui/Button";
 import { Cross2Icon } from "@radix-ui/react-icons";
 

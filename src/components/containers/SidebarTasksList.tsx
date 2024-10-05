@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { EMCategory, Task } from "../types";
-import { TaskLabel } from "./TaskLabel/TaskLabel";
+import { EMCategory, Task } from "../../types";
+import { TaskLabel } from "../TaskLabel/TaskLabel";
 import { useDroppable } from "@dnd-kit/core";
-import { getTasksFactory } from "../services/task/tasks.service";
+import { getTasksFactory } from "./login/task/tasks.service";
 
 export function SidebarTasksList() {
   const [ tasks, setTasks ] = useState<Task[]>([]);

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { AuthData } from './types';
-import { AuthContext, getSessionAuthData } from './services/authentification.service';
-import { addTaskToComponent } from './services/dnd.service';
-import { LoginForm } from './components/LoginForm';
-import { SidebarTasksList } from './components/SidebarTasksList';
-import { Quadrant } from './components/Quadrant';
+import { AuthContext, getSessionAuthData } from './lib/authentification';
+import { addTaskToComponent } from './components/containers/dnd.lib';
+import { LoginForm } from './components/login/LoginForm';
+import { SidebarTasksList } from './components/containers/SidebarTasksList';
+import { Quadrant } from '@/components/containers/Quadrant'
 import { Controls } from './components/Controls';
 import { AssistantContainer } from './components/Assistant/AssistantContainer';
 

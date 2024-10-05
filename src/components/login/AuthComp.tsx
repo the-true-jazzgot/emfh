@@ -1,7 +1,7 @@
-import { AuthContext, useCredentialData, UserCredentials } from "@/services/authentification.service";
+import { AuthContext, useCredentialData, UserCredentials } from "../../lib/authentification";
 import { AuthData } from "@/types";
 import { useContext, useEffect } from "react";
-import { Button } from "./ui/Button";
+import { Button } from "../ui/Button";
 
 interface AuthCompProps{
   credentials: UserCredentials | undefined,

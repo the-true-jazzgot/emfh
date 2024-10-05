@@ -1,6 +1,6 @@
 import { MouseEvent, useContext, useState } from "react";
-import { AuthContext, UserCredentials } from "../services/authentification.service";
-import { Button } from "./ui/Button";
+import { AuthContext, UserCredentials } from "@/lib/authentification"
+import { Button } from "../ui/Button";
 import { AuthComp } from "./AuthComp";
 import { AuthData } from "@/types";
 

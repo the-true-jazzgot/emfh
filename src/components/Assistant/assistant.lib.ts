@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs';
-import { EMCategory, Task } from '../types';
+import { EMCategory, Task } from '../../types';
 
 export interface TasksMatrix {
   quadrants: EMCategory[],

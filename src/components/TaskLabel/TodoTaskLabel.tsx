@@ -1,8 +1,8 @@
-import { AuthContext } from "@/services/authentification.service";
+import { AuthContext } from "@/lib/authentification"
 import { Task } from "../../types";
 import { DateInput } from "./DatePicker";
 import { useContext, useEffect, useState } from "react";
-import { useTodoTasksMutation } from "@/services/task/tasks.service";
+import { useTodoTasksMutation } from "@/components/TaskLabel/lib/tasks.fn";
 
 export function TodoTaskLabel({task}:{task:Task}) {
   const [date, setDate] = useState<Date>();
