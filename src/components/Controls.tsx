@@ -6,7 +6,7 @@ import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, t
 import { moveTask, TasksListAction } from "./containers/dnd.lib";
 import { CheckboxWL } from "./ui/CheckboxWL";
 import { AuthContext } from "@/lib/authentification";
-import { usePersistState } from "@/hooks/use-persist-state";
+import { useStorageState } from "@/hooks/use-storage-state";
 import { useToast } from "@/hooks/use-toast";
 
 interface Quadrants {
@@ -19,7 +19,7 @@ const errorNoAuth = new Error("No authentication data - login to reciveive");
 
 export function Controls() {
   const authContext = useContext<AuthData | undefined>(AuthContext);
-  const [ allTasks, setAllTasks] = usePersistState<Task[]>([], !!authContext ? authContext.username : "anonymous");
+  const [ allTasks, setAllTasks] = useStorageState<Task[]>([], !!authContext ? authContext.username : "anonymous");
   const [ areHabits, setAreHabits] = useState<boolean>(false);
   const [ areDailies, setAreDailies ] = useState<boolean>(false);
   const [ areTodos, setAreTodos ] = useState<boolean>(true);

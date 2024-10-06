@@ -5,7 +5,7 @@ import { Button } from "../ui/Button";
 
 interface AuthCompProps{
   credentials: UserCredentials | undefined,
-  setAuthData:React.Dispatch<React.SetStateAction<AuthData | undefined>>,
+  setAuthData:React.Dispatch<AuthData | undefined>,
   logoutFn: () => void
 }
 

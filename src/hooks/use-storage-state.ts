@@ -1,6 +1,6 @@
 import { Dispatch, useEffect, useState } from "react";
 
-export function usePersistState<T>(defaultValue: T, key: string):[T, Dispatch<T>] {
+export function useStorageState<T>(defaultValue: T, key: string):[T, Dispatch<T>] {
   const [value, setValue] = useState(() => {
     const storageValue:string | null = window.localStorage.getItem(key);
 

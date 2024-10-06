@@ -4,7 +4,7 @@ import { Button } from "../ui/Button";
 import { AuthComp } from "./AuthComp";
 import { AuthData } from "@/types";
 
-export function LoginForm({setAuthData}:{setAuthData: React.Dispatch<React.SetStateAction<AuthData | undefined>>}) {
+export function LoginForm({setAuthData}:{setAuthData: React.Dispatch<AuthData | undefined>}) {
   const [credentials, setCredentials] = useState<UserCredentials>();
   const authContext = useContext<AuthData | undefined>(AuthContext);
 

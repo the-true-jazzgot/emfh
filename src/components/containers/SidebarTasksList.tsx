@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { EMCategory, Task } from "../../types";
 import { TaskLabel } from "../TaskLabel/TaskLabel";
 import { useDroppable } from "@dnd-kit/core";
-import { getTasksFactory } from "./login/task/tasks.service";
+import { getTasksFactory } from "../TaskLabel/lib/tasks.fn"
 
 export function SidebarTasksList() {
   const [ tasks, setTasks ] = useState<Task[]>([]);
