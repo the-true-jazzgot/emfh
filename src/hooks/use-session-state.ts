@@ -7,7 +7,6 @@ export function useSessionState<T>(key:string, defaultValue:T):[T, Dispatch<T>] 
     const sessionData:string | null = window.sessionStorage.getItem(key);
     if(sessionData !== null) 
     {
-      console.log(sessionData);
       return JSON.parse(sessionData);
     }
     return defaultValue;

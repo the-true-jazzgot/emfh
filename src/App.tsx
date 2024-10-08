@@ -1,16 +1,15 @@
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { AuthData } from './types';
 import { AuthContext } from './components/login/lib/authentication';
 import { addTaskToComponent } from './components/containers/dnd.lib';
 import { LoginForm } from './components/login/LoginForm';
 import { SidebarTasksList } from './components/containers/SidebarTasksList';
 import { Quadrant } from '@/components/containers/Quadrant'
 import { Controls } from './components/Controls';
-import { useSessionState } from './hooks/use-session-state';
+import { useAuthData } from './components/login/lib/use-auth-data';
 
 
 function App() {
-  const [authData,setAuthData] = useSessionState<AuthData | undefined>("emfh", undefined);
+  const {authData} = useAuthData();
   const sensors = useSensors(
     useSensor(PointerSensor, {
         activationConstraint: { 
@@ -23,7 +22,7 @@ function App() {
   return (
     <div className='grid grid-cols-5 grid-rows-12 gap-4 inset-0 m-0 p-0'>
       <AuthContext.Provider value={authData}>
-        <LoginForm setAuthData={setAuthData} />
+        <LoginForm />
         {!!authData && <>
           <DndContext onDragEnd={addTaskToComponent} sensors={sensors}>
             <SidebarTasksList />
