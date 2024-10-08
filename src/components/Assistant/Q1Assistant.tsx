@@ -5,7 +5,7 @@ import { Button } from "../ui/Button";
 import { AssistantAction } from "./assistant.lib";
 import { moveTask, TasksListAction } from "../containers/dnd.lib";
 import { useTodoTasksMutation } from "../TaskLabel/lib/tasks.fn";
-import { AuthContext } from "@/components/login/lib/authentication";
+import { AuthContext } from "@/components/header/lib/authentication";
 
 export function Q1Assistant({tasks}:{tasks: Task[] | undefined}) {
   const [message, setMessage] = useState<string[]>([]);

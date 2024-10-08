@@ -1,11 +1,11 @@
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { AuthContext } from './components/login/lib/authentication';
+import { AuthContext } from './components/header/lib/authentication';
 import { addTaskToComponent } from './components/containers/dnd.lib';
-import { LoginForm } from './components/login/LoginForm';
+import { Header } from './components/header/Header';
 import { SidebarTasksList } from './components/containers/SidebarTasksList';
 import { Quadrant } from '@/components/containers/Quadrant'
 import { Controls } from './components/Controls';
-import { useAuthData } from './components/login/lib/use-auth-data';
+import { useAuthData } from './components/header/lib/use-auth-data';
 
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
   return (
     <div className='grid grid-cols-5 grid-rows-12 gap-4 inset-0 m-0 p-0'>
       <AuthContext.Provider value={authData}>
-        <LoginForm />
+        <Header />
         {!!authData && <>
           <DndContext onDragEnd={addTaskToComponent} sensors={sensors}>
             <SidebarTasksList />

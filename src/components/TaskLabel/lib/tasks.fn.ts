@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { AuthData, EMCategory, Task, TaskType } from "../../../types";
-import { AuthContext, getRequestSettings } from "../../login/lib/authentication";
+import { AuthContext, getRequestSettings } from "../../header/lib/authentication";
 import { Observable, Subject } from "rxjs";
 import { AllTaskTypesDataContract, SingleTaskDataContract, TaskListContract, TodoTaskDataContract } from "./task.datacontracts";
 import { useContext } from "react";

@@ -5,7 +5,7 @@ import { Button } from "./ui/Button";
 import { convertServerDataToLocalData, filterLocalDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery, useTodoTasksMutation } from "@/components/TaskLabel/lib/tasks.fn";
 import { moveTask, TasksListAction } from "./containers/dnd.lib";
 import { CheckboxWL } from "./ui/CheckboxWL";
-import { AuthContext } from "@/components/login/lib/authentication";
+import { AuthContext } from "@/components/header/lib/authentication";
 import { useStorageState } from "@/hooks/use-storage-state";
 import { useToast } from "@/hooks/use-toast";
 import { AssistantContainer } from "./Assistant/AssistantContainer";
