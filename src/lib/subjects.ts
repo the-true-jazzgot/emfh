@@ -1,11 +1,11 @@
-import { Observable, Subject } from "rxjs";
+import { Observable, ReplaySubject, Subject } from "rxjs";
 import { EMCategory, Task, UserCredentials } from "./types";
 
 
 /*****************************
 ** Login and authentication **
 *****************************/
-export const getCredentials:Subject<UserCredentials> = new Subject<UserCredentials>();
+export const getCredentials:Subject<UserCredentials> = new ReplaySubject<UserCredentials>(1);
 export const updateCredentials = (credentials: UserCredentials):void => getCredentials.next(credentials);
 
 
@@ -67,7 +67,7 @@ export interface TasksMatrix {
   q4?: Task[]
 };
 
-const taskMatrix:Subject<TasksMatrix> = new Subject();
+const taskMatrix:Subject<TasksMatrix> = new ReplaySubject<TasksMatrix>(1);
 
 export const assistant = {
   setAssistantData: (tasksMatrix: TasksMatrix):void => taskMatrix.next(tasksMatrix),
