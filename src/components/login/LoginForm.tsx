@@ -1,7 +1,7 @@
 import { Button } from "../ui/Button";
-import { updateCredentials } from "../../lib/hooks/use-auth-data";
 import { MouseEvent } from "react";
 import { UserCredentials } from "@/lib/types";
+import { updateCredentials } from "@/lib/subjects";
 
 export function LoginForm() {
   function handleLogin(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {

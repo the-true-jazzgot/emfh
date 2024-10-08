@@ -4,8 +4,8 @@ import { useQueryClient, useQuery, UseQueryResult } from "@tanstack/react-query"
 import { AxiosRequestConfig } from "axios";
 import { useSessionState } from "@/lib/hooks/use-session-state";
 import { useEffect, useState } from "react";
-import { Subject } from "rxjs";
 import { getRequestSettings } from "../utils";
+import { getCredentials } from "../subjects";
 
 interface LoginDataContract {
   appVersion: string,
@@ -17,9 +17,6 @@ interface LoginDataContract {
   },
   success: boolean
 };
-
-const subject:Subject<UserCredentials> = new Subject<UserCredentials>();
-export const updateCredentials = (credentials: UserCredentials):void => subject.next(credentials);
 
 function useCredentialData(userCredentials:UserCredentials, enabled?:boolean):UseQueryResult<LoginDataContract> {
   const queryClient = useQueryClient();
@@ -73,7 +70,7 @@ export function useAuthData() {
   }, [authData]);
 
   useEffect(()=>{
-    const subscription = subject.subscribe(
+    const subscription = getCredentials.subscribe(
       (credentials:UserCredentials)=>{
         setUserCredentials(credentials);
         if(credentials.username === ""){

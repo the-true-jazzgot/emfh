@@ -2,7 +2,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { EMCategory, Task } from "../../lib/types";
 import { TaskLabel } from "../TaskLabel/TaskLabel";
 import { useEffect, useState } from "react";
-import { getTasksFactory } from "@/components/TaskLabel/lib/tasks.fn";
+import { getTasksFactory } from "@/lib/subjects";
 
 export function Quadrant({quadrant}:{quadrant: EMCategory}) {
   const [ tasks, setTasks ] = useState<Task[]>([]);

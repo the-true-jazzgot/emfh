@@ -1,7 +1,7 @@
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { AuthContext } from "@/lib/contexts"
 import { addTaskToComponent } from './components/containers/dnd.lib';
-import { Header } from './components/header/Header';
+import { Header } from './components/login/Header';
 import { SidebarTasksList } from './components/containers/SidebarTasksList';
 import { Quadrant } from '@/components/containers/Quadrant'
 import { Controls } from './components/Controls';

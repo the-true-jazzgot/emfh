@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Q1Assistant } from "./Q1Assistant";
-import { assistant, TasksMatrix } from "@/components/Assistant/assistant.lib";
 import { Button } from "../ui/Button";
 import { Cross2Icon } from "@radix-ui/react-icons";
+import { assistant, TasksMatrix } from "@/lib/subjects";
 
 export function AssistantContainer({isOpen, setIsOpen}:{isOpen:boolean, setIsOpen:(isOpen:boolean)=>void}) {
   const [quadrantsMatrix, setQuadrantsMatrix] = useState<TasksMatrix>({} as TasksMatrix);

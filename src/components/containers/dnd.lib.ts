@@ -1,20 +1,6 @@
 import { DragEndEvent } from "@dnd-kit/core";
 import { EMCategory } from "../../lib/types";
-import { Observable, Subject } from 'rxjs';
-
-export interface TasksListAction {
-  taskId: string,
-  action: "add" | "move",
-  moveTo: EMCategory,
-  moveFrom: EMCategory
-}
-
-const subject:Subject<TasksListAction> = new Subject();
-
-export const moveTask = {
-  dispatch: (tasksListAction: TasksListAction):void => subject.next(tasksListAction),
-  receive: ():Observable<TasksListAction> => subject.asObservable()
-};
+import { moveTask, TasksListAction } from "@/lib/subjects";
 
 export const addTaskToComponent = (e: DragEndEvent) => {
   const taskId: string = e.active.id.toString();

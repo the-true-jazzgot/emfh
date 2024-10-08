@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { AuthData, EMCategory, Task, TaskType } from "../../../lib/types";
-import { Observable, Subject } from "rxjs";
 import { AllTaskTypesDataContract, SingleTaskDataContract, TaskListContract, TodoTaskDataContract } from "./task.datacontracts";
 import { useContext } from "react";
 import { axiosInstance } from "@/config/APIconfig";
@@ -90,49 +89,6 @@ export const filterServerDataByType = (allTasks:AllTaskTypesDataContract[], habi
     returnTasks = [...returnTasks,...filteredTasks];
   }
   return returnTasks;
-}
-
-const uncategorizedSubject:Subject<Task[]> = new Subject();
-
-export const tasksUncategorized = {
-  dispatch: (tasks: Task[]):void => uncategorizedSubject.next(tasks),
-  receive: ():Observable<Task[]> => uncategorizedSubject.asObservable()
-};
-
-const subjectQ1:Subject<Task[]> = new Subject();
-
-export const tasksQ1 = {
-  dispatch: (tasks: Task[]):void => subjectQ1.next(tasks),
-  receive: ():Observable<Task[]> => subjectQ1.asObservable()
-};
-
-const subjectQ2:Subject<Task[]> = new Subject();
-
-export const tasksQ2 = {
-  dispatch: (tasks: Task[]):void => subjectQ2.next(tasks),
-  receive: ():Observable<Task[]> => subjectQ2.asObservable()
-};
-
-const subjectQ3:Subject<Task[]> = new Subject();
-
-export const tasksQ3 = {
-  dispatch: (tasks: Task[]):void => subjectQ3.next(tasks),
-  receive: ():Observable<Task[]> => subjectQ3.asObservable()
-};
-
-const subjectQ4:Subject<Task[]> = new Subject();
-
-export const tasksQ4 = {
-  dispatch: (tasks: Task[]):void => subjectQ4.next(tasks),
-  receive: ():Observable<Task[]> => subjectQ4.asObservable()
-};
-
-export const getTasksFactory: Record<EMCategory, () => Observable<Task[]>> = {
-  "uncategorized": tasksUncategorized.receive,
-  "q1": tasksQ1.receive,
-  "q2": tasksQ2.receive,
-  "q3": tasksQ3.receive,
-  "q4": tasksQ4.receive
 }
 
 function getUpdateTodoTaskParameters(localtask: Task, authData: AuthData): AxiosRequestConfig {
