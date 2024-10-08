@@ -2,12 +2,13 @@ import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react
 import { assistant, TasksMatrix } from "./Assistant/assistant.lib";
 import { AuthData, EMCategory, Task, TaskType } from "../types";
 import { Button } from "./ui/Button";
-import { convertServerDataToLocalData, filterDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery, useTodoTasksMutation } from "@/components/TaskLabel/lib/tasks.fn";
+import { convertServerDataToLocalData, filterLocalDataByCategory, tasksQ1, tasksQ2, tasksQ3, tasksQ4, tasksUncategorized, toDosQuery, useTodoTasksMutation } from "@/components/TaskLabel/lib/tasks.fn";
 import { moveTask, TasksListAction } from "./containers/dnd.lib";
 import { CheckboxWL } from "./ui/CheckboxWL";
 import { AuthContext } from "@/lib/authentification";
 import { useStorageState } from "@/hooks/use-storage-state";
 import { useToast } from "@/hooks/use-toast";
+import { AssistantContainer } from "./Assistant/AssistantContainer";
 
 interface Quadrants {
   get: Task[],
@@ -23,6 +24,7 @@ export function Controls() {
   const [ areHabits, setAreHabits] = useState<boolean>(false);
   const [ areDailies, setAreDailies ] = useState<boolean>(false);
   const [ areTodos, setAreTodos ] = useState<boolean>(true);
+  const [isAssistantOpen, setIsAssistantOpen] = useState<boolean>(false);
   const { data } = toDosQuery(setQueryCategory());
   const [uncategorized, setUncategorized] = useState<Task[]>([]);
   const [q1, setQ1] = useState<Task[]>([]);
@@ -31,13 +33,6 @@ export function Controls() {
   const [q4, setQ4] = useState<Task[]>([]);
   const {mutate} = useTodoTasksMutation(authContext);
   const {toast} = useToast();
-
-  function setQueryCategory():TaskType | undefined { //if only one category is selected pull only that one, otherwise pull all
-    if(areHabits && !areDailies && !areTodos) return "habit";
-    if(!areHabits && areDailies && !areTodos) return "daily";
-    if(!areHabits && !areDailies && areTodos) return "todo";
-    return undefined;
-  }
 
   const quadrantsFactory:Record<EMCategory, Quadrants> = {
     "q1": {
@@ -70,6 +65,32 @@ export function Controls() {
   function handleCategoryListChange(category: EMCategory):void {
     quadrantsFactory[category].send(quadrantsFactory[category].get);
   }
+
+  const setAssistantData = ():void => {
+    const quadrants:EMCategory[] = [];
+    let tasksMatrix: TasksMatrix = {quadrants};
+
+    tasksMatrix.q1 = q1;
+    if(q1.length > 3 && !quadrants.find(item => item === "q1")) {
+        quadrants.push("q1");
+    }
+    else {
+      autoresolveQ1(q1);
+    }
+
+    tasksMatrix.q2 = q2;
+    tasksMatrix.q3 = q3;
+    tasksMatrix.q4 = q4;
+
+    assistant.setAssistantData(tasksMatrix);
+  }
+
+  function setQueryCategory():TaskType | undefined { //if only one category is selected pull only that one, otherwise pull all
+    if(areHabits && !areDailies && !areTodos) return "habit";
+    if(!areHabits && areDailies && !areTodos) return "daily";
+    if(!areHabits && !areDailies && areTodos) return "todo";
+    return undefined;
+  }
   
   useEffect(() => {
     if(!authContext) throw errorNoAuth;
@@ -80,11 +101,12 @@ export function Controls() {
   }, [data, areDailies, areHabits, areTodos]);
 
   useEffect(()=>{
-    setQ1(filterDataByCategory("q1", allTasks));
-    setQ2(filterDataByCategory("q2", allTasks));
-    setQ3(filterDataByCategory("q3", allTasks));
-    setQ4(filterDataByCategory("q4", allTasks));
-    setUncategorized(filterDataByCategory("uncategorized", allTasks));
+    setQ1(filterLocalDataByCategory("q1", allTasks));
+    setQ2(filterLocalDataByCategory("q2", allTasks));
+    setQ3(filterLocalDataByCategory("q3", allTasks));
+    setQ4(filterLocalDataByCategory("q4", allTasks));
+    setUncategorized(filterLocalDataByCategory("uncategorized", allTasks));
+    setAssistantData();
   }, [allTasks]);
 
   useEffect(()=>{
@@ -147,21 +169,6 @@ export function Controls() {
       description: `Set due date for today - ${currentdate.toLocaleDateString()}`,
     });
   }
-  
-  const evaluateMatrix = ():void => {
-    const quadrants:EMCategory[] = [];
-    let tasksMatrix: TasksMatrix = {quadrants};
-
-    tasksMatrix.q1 = q1;
-    if(q1.length > 3 && !quadrants.find(item => item === "q1")) {
-        quadrants.push("q1");
-    }
-    else {
-      autoresolveQ1(q1);
-    }
-
-    assistant.setAssistantData(tasksMatrix);
-  }
 
   function isDisabled():boolean {
     if(q1.length < 1 && q2.length < 1 && q3.length < 1 && q4.length < 1) return true;
@@ -169,14 +176,17 @@ export function Controls() {
   };
 
   return (
-    <footer className="flex col-span-5 row-span-1">
-      <Button text="Apply" fn={evaluateMatrix} disabled={isDisabled()} />
-      <div className="flex">
-        <CheckboxWL id="habits" label="Habits" onCheckedChange={val => setAreHabits(val)} checked={areHabits} />
-        <CheckboxWL id="dailies" label="Dailies" onCheckedChange={val => setAreDailies(val)} checked={areDailies} />
-        <CheckboxWL id="todos" label="ToDos" onCheckedChange={val => setAreTodos(val)} checked={areTodos} />
-      </div>
-    </footer>
+    <>
+      <footer className="flex col-span-5 row-span-1">
+        <Button text="Apply" fn={()=>setIsAssistantOpen(true)} disabled={isDisabled()} />
+        <div className="flex">
+          <CheckboxWL id="habits" label="Habits" onCheckedChange={val => setAreHabits(val)} checked={areHabits} />
+          <CheckboxWL id="dailies" label="Dailies" onCheckedChange={val => setAreDailies(val)} checked={areDailies} />
+          <CheckboxWL id="todos" label="ToDos" onCheckedChange={val => setAreTodos(val)} checked={areTodos} />
+        </div>
+      </footer>
+      <AssistantContainer isOpen={isAssistantOpen} setIsOpen={setIsAssistantOpen} />
+    </>
   );
 }
 

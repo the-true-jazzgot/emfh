@@ -45,7 +45,7 @@ export function toDosQuery(type?:TaskType, id?:string) {
 };
 
 export  function convertServerDataToLocalData(rawTasks:AllTaskTypesDataContract[], storageData:Task[], habits:boolean, dailies: boolean, todos: boolean):Task[] {
-  const data:AllTaskTypesDataContract[] = filterDataByType(rawTasks, habits, dailies, todos);
+  const data:AllTaskTypesDataContract[] = filterServerDataByType(rawTasks, habits, dailies, todos);
   const localData:Task[] = [];
 
   data.forEach(serverTask => {
@@ -68,11 +68,11 @@ export  function convertServerDataToLocalData(rawTasks:AllTaskTypesDataContract[
   return localData;
 };
 
-export const filterDataByCategory = (category:EMCategory, allTasks:Task[]):Task[] => {
+export const filterLocalDataByCategory = (category:EMCategory, allTasks:Task[]):Task[] => {
   return allTasks?.filter(item => item.l_category === category) || [] as Task[];
 }
 
-export const filterDataByType = (allTasks:AllTaskTypesDataContract[], habits:boolean, dailies:boolean, todos:boolean):AllTaskTypesDataContract[] => {
+export const filterServerDataByType = (allTasks:AllTaskTypesDataContract[], habits:boolean, dailies:boolean, todos:boolean):AllTaskTypesDataContract[] => {
   let returnTasks:AllTaskTypesDataContract[] = [];
   let filteredTasks: AllTaskTypesDataContract[] = [];
   if(habits) {

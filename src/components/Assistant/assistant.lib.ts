@@ -9,6 +9,13 @@ export interface TasksMatrix {
   q4?: Task[]
 };
 
+export interface AssistantAction {
+  value: string,
+  message: string, 
+  action: (task:Task) => void,
+  performed?: boolean
+}
+
 const subject:Subject<TasksMatrix> = new Subject();
 
 export const assistant = {

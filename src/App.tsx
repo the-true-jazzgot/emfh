@@ -6,7 +6,6 @@ import { LoginForm } from './components/login/LoginForm';
 import { SidebarTasksList } from './components/containers/SidebarTasksList';
 import { Quadrant } from '@/components/containers/Quadrant'
 import { Controls } from './components/Controls';
-import { AssistantContainer } from './components/Assistant/AssistantContainer';
 import { useSessionState } from './hooks/use-session-state';
 
 
@@ -27,14 +26,13 @@ function App() {
         <LoginForm setAuthData={setAuthData} />
         {!!authData && <>
           <DndContext onDragEnd={addTaskToComponent} sensors={sensors}>
-          <SidebarTasksList />
-          <Quadrant quadrant={"q1"} />
-          <Quadrant quadrant={"q2"} />
-          <Quadrant quadrant={"q3"} />
-          <Quadrant quadrant={"q4"} />
+            <SidebarTasksList />
+            <Quadrant quadrant={"q1"} />
+            <Quadrant quadrant={"q2"} />
+            <Quadrant quadrant={"q3"} />
+            <Quadrant quadrant={"q4"} />
           </DndContext>
           <Controls />
-          <AssistantContainer />
         </>}
       </AuthContext.Provider>
     </div>
