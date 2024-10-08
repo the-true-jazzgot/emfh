@@ -1,4 +1,4 @@
-import { AuthContext, useCredentialData, UserCredentials } from "../../lib/authentification";
+import { AuthContext, useAuthData, UserCredentials } from "./lib/authentication";
 import { AuthData } from "@/types";
 import { useContext, useEffect } from "react";
 import { Button } from "../ui/Button";
@@ -10,7 +10,7 @@ interface AuthCompProps{
 }
 
 export function AuthComp({credentials, setAuthData, logoutFn}:AuthCompProps){
-  const { isSuccess, data } = useCredentialData({password: credentials?.password || "", username: credentials?.username || ""});
+  const { isSuccess, data } = useAuthData({password: credentials?.password || "", username: credentials?.username || ""});
   const authContext = useContext<AuthData | undefined>(AuthContext);
 
   useEffect(()=>{

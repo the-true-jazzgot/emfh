@@ -1,4 +1,4 @@
-import { AuthContext } from "@/lib/authentification"
+import { AuthContext } from "@/components/login/lib/authentication"
 import { Task } from "../../types";
 import { DateInput } from "./DatePicker";
 import { useContext, useEffect, useState } from "react";

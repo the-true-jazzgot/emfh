@@ -1,6 +1,6 @@
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { AuthData } from './types';
-import { AuthContext } from './lib/authentification';
+import { AuthContext } from './components/login/lib/authentication';
 import { addTaskToComponent } from './components/containers/dnd.lib';
 import { LoginForm } from './components/login/LoginForm';
 import { SidebarTasksList } from './components/containers/SidebarTasksList';

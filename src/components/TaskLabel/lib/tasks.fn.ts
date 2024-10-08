@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { AuthData, EMCategory, Task, TaskType } from "../../../types";
-import { AuthContext, axiosInstance, getRequestSettings } from "../../../lib/authentification";
+import { AuthContext, getRequestSettings } from "../../login/lib/authentication";
 import { Observable, Subject } from "rxjs";
 import { AllTaskTypesDataContract, SingleTaskDataContract, TaskListContract, TodoTaskDataContract } from "./task.datacontracts";
 import { useContext } from "react";
+import { axiosInstance } from "@/config/APIconfig";
 
 const getTodos = async (authData:AuthData | undefined, type:string | undefined, id?: string):Promise<any[] | any> => {
   if(!authData) throw new Error("Habitica API token missing or broken, login to get it");
