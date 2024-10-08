@@ -12,6 +12,11 @@ export type Task = {
     l_validationDate?: Date
 }
 
+export type UserCredentials = {
+    username: string,
+    password: string
+  };
+
 export type AuthData = {
     id: string,
     apiToken: string,

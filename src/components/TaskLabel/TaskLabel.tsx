@@ -1,6 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import {CSS} from '@dnd-kit/utilities';
-import { EMCategory, Task } from "../../types";
+import { EMCategory, Task } from "../../lib/types";
 import { DailyTaskLabel } from "./DailyTaskLabel";
 import { HabitTaskLabel } from "./HabitTaskLabel";
 import { TodoTaskLabel } from "./TodoTaskLabel";

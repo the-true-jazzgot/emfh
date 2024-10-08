@@ -1,8 +1,8 @@
-import { AuthContext } from "./lib/authentication";
-import { AuthData } from "@/types";
+import { AuthContext } from "../../lib/contexts";
+import { AuthData } from "@/lib/types";
 import { useContext } from "react";
 import { Button } from "../ui/Button";
-import { updateCredentials } from "./lib/use-auth-data";
+import { updateCredentials } from "../../lib/hooks/use-auth-data";
 
 export function AuthComp(){
   const authContext = useContext<AuthData | undefined>(AuthContext);

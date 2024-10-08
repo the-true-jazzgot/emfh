@@ -1,5 +1,5 @@
-import { AuthContext } from "@/components/header/lib/authentication"
-import { Task } from "../../types";
+import { AuthContext } from "@/lib/contexts"
+import { Task } from "../../lib/types";
 import { DateInput } from "./DatePicker";
 import { useContext, useEffect, useState } from "react";
 import { useTodoTasksMutation } from "@/components/TaskLabel/lib/tasks.fn";

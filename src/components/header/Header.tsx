@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { AuthContext } from "@/components/header/lib/authentication"
+import { AuthContext } from "@/lib/contexts"
 import { AuthComp } from "./AuthComp";
-import { AuthData } from "@/types";
+import { AuthData } from "@/lib/types";
 import { LoginForm } from "./LoginForm";
 
 export function Header() {

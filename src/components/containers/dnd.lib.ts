@@ -1,5 +1,5 @@
 import { DragEndEvent } from "@dnd-kit/core";
-import { EMCategory } from "../../types";
+import { EMCategory } from "../../lib/types";
 import { Observable, Subject } from 'rxjs';
 
 export interface TasksListAction {

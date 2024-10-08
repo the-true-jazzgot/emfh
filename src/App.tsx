@@ -1,11 +1,11 @@
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { AuthContext } from './components/header/lib/authentication';
+import { AuthContext } from "@/lib/contexts"
 import { addTaskToComponent } from './components/containers/dnd.lib';
 import { Header } from './components/header/Header';
 import { SidebarTasksList } from './components/containers/SidebarTasksList';
 import { Quadrant } from '@/components/containers/Quadrant'
 import { Controls } from './components/Controls';
-import { useAuthData } from './components/header/lib/use-auth-data';
+import { useAuthData } from './lib/hooks/use-auth-data';
 
 
 function App() {

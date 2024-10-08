@@ -1,4 +1,4 @@
-import { TaskType } from "@/types";
+import { TaskType } from "@/lib/types";
 
 interface ChecklistDataContract {
   completed: boolean,

@@ -1,11 +1,11 @@
-import { AuthData } from "@/types";
-import { getRequestSettings, UserCredentials } from "./authentication";
+import { AuthData, UserCredentials } from "@/lib/types";
 import { axiosInstance } from "@/config/APIconfig";
 import { useQueryClient, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { AxiosRequestConfig } from "axios";
-import { useSessionState } from "@/hooks/use-session-state";
+import { useSessionState } from "@/lib/hooks/use-session-state";
 import { useEffect, useState } from "react";
 import { Subject } from "rxjs";
+import { getRequestSettings } from "../utils";
 
 interface LoginDataContract {
   appVersion: string,
