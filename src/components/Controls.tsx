@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { AuthData, EMCategory, Task, TaskType } from "../lib/types";
 import { Button } from "./ui/Button";
-import { convertServerDataToLocalData, filterLocalDataByCategory, toDosQuery, useTodoTasksMutation } from "@/components/TaskLabel/lib/tasks.fn";
+import { convertServerDataToLocalData, filterLocalDataByCategory, useTodosQuery, useTodoTasksMutation } from "@/components/TaskLabel/lib/tasks.fn";
 import { CheckboxWL } from "./ui/CheckboxWL";
 import { AuthContext } from "@/lib/contexts";
 import { useStorageState } from "@/lib/hooks/use-storage-state";
@@ -24,7 +24,7 @@ export function Controls() {
   const [ areDailies, setAreDailies ] = useState<boolean>(false);
   const [ areTodos, setAreTodos ] = useState<boolean>(true);
   const [isAssistantOpen, setIsAssistantOpen] = useState<boolean>(false);
-  const { data } = toDosQuery(setQueryCategory());
+  const { data } = useTodosQuery(setQueryCategory());
   const [uncategorized, setUncategorized] = useState<Task[]>([]);
   const [q1, setQ1] = useState<Task[]>([]);
   const [q2, setQ2] = useState<Task[]>([]);
@@ -72,9 +72,6 @@ export function Controls() {
     tasksMatrix.q1 = q1;
     if(q1.length > 3 && !quadrants.find(item => item === "q1")) {
         quadrants.push("q1");
-    }
-    else {
-      autoresolveQ1(q1);
     }
 
     tasksMatrix.q2 = q2;

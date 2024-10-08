@@ -28,7 +28,7 @@ export const todoKeys = {
   single: (username: string | undefined, id: string) => [...todoKeys.all(username), id] as const,
 }
 
-export function toDosQuery(type?:TaskType, id?:string) {
+export function useTodosQuery(type?:TaskType, id?:string) {
   const authData:AuthData | undefined = useContext<AuthData | undefined>(AuthContext);
   const queryKey = id ? 
     todoKeys.single(authData?.username, id) 
