@@ -81,8 +81,7 @@ export const assistant = {
 export interface TasksListAction {
   taskId: string,
   action: "add" | "move",
-  moveTo: EMCategory,
-  moveFrom: EMCategory
+  moveTo: EMCategory
 }
 
 const taskListAction:Subject<TasksListAction> = new Subject();
@@ -90,4 +89,15 @@ const taskListAction:Subject<TasksListAction> = new Subject();
 export const moveTask = {
   dispatch: (tasksListAction: TasksListAction):void => taskListAction.next(tasksListAction),
   receive: ():Observable<TasksListAction> => taskListAction.asObservable()
+};
+
+
+/*****************************
+******** Update task ********
+*****************************/
+const taskUpdate:Subject<Task> = new Subject<Task>();
+
+export const updateTask = {
+  dispatch: (task: Task):void => taskUpdate.next(task),
+  receive: ():Observable<Task> => taskUpdate.asObservable()
 };

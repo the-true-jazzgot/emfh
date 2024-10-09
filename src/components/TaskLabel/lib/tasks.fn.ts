@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { AuthData, EMCategory, Task, TaskType } from "../../../lib/types";
-import { AllTaskTypesDataContract, SingleTaskDataContract, TaskListContract, TodoTaskDataContract } from "./task.datacontracts";
+import { AuthData, Task, TaskType } from "../../../lib/types";
+import { SingleTaskDataContract, TaskListContract, TodoTaskDataContract } from "./task.datacontracts";
 import { useContext } from "react";
 import { axiosInstance } from "@/config/APIconfig";
 import { AuthContext } from "@/lib/contexts";
@@ -44,52 +44,6 @@ export function useTodosQuery(type?:TaskType, id?:string) {
     refetchOnWindowFocus: false
   });
 };
-
-export  function convertServerDataToLocalData(rawTasks:AllTaskTypesDataContract[], storageData:Task[], habits:boolean, dailies: boolean, todos: boolean):Task[] {
-  const data:AllTaskTypesDataContract[] = filterServerDataByType(rawTasks, habits, dailies, todos);
-  const localData:Task[] = [];
-
-  data.forEach(serverTask => {
-    const storageTask = storageData.find(item => item.id === serverTask.id);
-    let localTask:Task = {
-      id: serverTask.id, 
-      name: serverTask.text, 
-      l_category: "uncategorized", 
-      date: !!serverTask.nextDue ? serverTask.nextDue[0] : serverTask.date, 
-      type: serverTask.type, 
-      l_validated: false
-    }
-    if(!!storageTask) {
-      localTask.l_category = storageTask.l_category;
-      localTask.l_validated = storageTask.l_validated;
-      localTask.l_validationDate = storageTask.l_validationDate;
-    }
-    localData.push(localTask);
-  });
-  return localData;
-};
-
-export const filterLocalDataByCategory = (category:EMCategory, allTasks:Task[]):Task[] => {
-  return allTasks?.filter(item => item.l_category === category) || [] as Task[];
-}
-
-export const filterServerDataByType = (allTasks:AllTaskTypesDataContract[], habits:boolean, dailies:boolean, todos:boolean):AllTaskTypesDataContract[] => {
-  let returnTasks:AllTaskTypesDataContract[] = [];
-  let filteredTasks: AllTaskTypesDataContract[] = [];
-  if(habits) {
-    filteredTasks = allTasks?.filter(item => item.type === "habit");
-    returnTasks = [...filteredTasks];
-  };
-  if(dailies) {
-    filteredTasks = allTasks?.filter(item => item.type === "daily");
-    returnTasks = [...returnTasks,...filteredTasks];
-  }
-  if(todos) {
-    filteredTasks = allTasks?.filter(item => item.type === "todo");
-    returnTasks = [...returnTasks,...filteredTasks];
-  }
-  return returnTasks;
-}
 
 function getUpdateTodoTaskParameters(localtask: Task, authData: AuthData): AxiosRequestConfig {
   let queryBodyParameters:any = { data: {}};

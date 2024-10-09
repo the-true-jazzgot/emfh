@@ -10,11 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 
 export interface TaskLabelProps {
   task: Task,
-  assistant?: boolean, 
   assistantOptions?: AssistantAction[]
 }
 
-export function TaskLabel({task, assistant, assistantOptions}:TaskLabelProps) {
+export function TaskLabel({task, assistantOptions}:TaskLabelProps) {
   const [options, setOptions] = useState<AssistantAction[] | undefined>(assistantOptions);
   const [selectedOption, setSelectedOption] = useState<string>(getDefaultOption());
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
@@ -47,6 +46,8 @@ export function TaskLabel({task, assistant, assistantOptions}:TaskLabelProps) {
     
     if(!!option) {
       option.performed = true;
+      task.l_validated = true;
+      task.l_validationDate = new Date();
       option.action(task);
     }
 
@@ -57,7 +58,7 @@ export function TaskLabel({task, assistant, assistantOptions}:TaskLabelProps) {
   return (
     <article id={task.id} 
       data-category={task.l_category as EMCategory} 
-      className="relative rounded bg-white font-bold my-2 p-2 text-sm text-habitxt w-full order-1" 
+      className={`relative rounded bg-white font-bold my-2 p-2 text-sm text-habitxt w-full order-1 ${task.l_validated ? "valid ": "invalid "}`}
       ref={setNodeRef} 
       style={style} 
       {...listeners} 
@@ -68,7 +69,7 @@ export function TaskLabel({task, assistant, assistantOptions}:TaskLabelProps) {
       {task.type === "todo" && <TodoTaskLabel task={task} />}
       {task.type === "daily" && <DailyTaskLabel task={task} />}
       {task.type === "habit" && <HabitTaskLabel task={task} />}
-      {!!assistant && !!assistantOptions &&
+      {!!assistantOptions &&
         <Select value={selectedOption} onValueChange={value => handleSelection(value)} defaultValue={selectedOption}>
           <SelectTrigger>
             <SelectValue placeholder="Choose quick action" />

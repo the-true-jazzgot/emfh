@@ -30,7 +30,6 @@ export function Q1Assistant({tasks}:{tasks: Task[] | undefined}) {
     
     const moveToQ2:TasksListAction = {
       taskId: task.id,
-      moveFrom: "q1",
       moveTo: "q2",
       action: "move"
     }
@@ -66,7 +65,7 @@ export function Q1Assistant({tasks}:{tasks: Task[] | undefined}) {
       <h4>Assistant for Q1</h4>
       {!!tasks && tasks.length > 0 &&
         tasks.map((task: Task) => (
-          <TaskLabel task={task} key={task.id} assistant={true} assistantOptions={getTaskActions(task)} />
+          <TaskLabel task={task} key={task.id} assistantOptions={getTaskActions(task)} />
         ))
       }
       <div className="order-1 block">

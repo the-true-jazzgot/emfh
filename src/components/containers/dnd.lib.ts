@@ -11,7 +11,7 @@ export const addTaskToComponent = (e: DragEndEvent) => {
     const newCategory: EMCategory = e.over?.id as EMCategory;
 
     if(currCategory !== newCategory) {
-      const move: TasksListAction = { taskId: taskId, action: "move", moveFrom: currCategory, moveTo: newCategory };
+      const move: TasksListAction = { taskId: taskId, action: "move", moveTo: newCategory };
     
       moveTask.dispatch(move);
     }
