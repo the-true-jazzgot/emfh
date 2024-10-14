@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { AuthContext } from "@/lib/contexts"
+import { addTaskToComponent } from './components/containers/dnd.lib';
+import { Header } from './components/login/Header';
+import { SidebarTasksList } from './components/containers/SidebarTasksList';
+import { Quadrant } from '@/components/containers/Quadrant'
+import { Controls } from './components/Controls';
+import { useAuthData } from './lib/hooks/use-auth-data';
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const {authData} = useAuthData();
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+        activationConstraint: { 
+          delay: 50,
+          tolerance: 18
+        }
+    })
+  );
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className='grid grid-cols-5 grid-rows-12 gap-4 inset-0 m-0 p-0'>
+      <AuthContext.Provider value={authData}>
+        <Header />
+        {!!authData && <>
+          <DndContext onDragEnd={addTaskToComponent} sensors={sensors}>
+            <SidebarTasksList />
+            <Quadrant quadrant={"q1"} />
+            <Quadrant quadrant={"q2"} />
+            <Quadrant quadrant={"q3"} />
+            <Quadrant quadrant={"q4"} />
+          </DndContext>
+          <Controls />
+        </>}
+      </AuthContext.Provider>
+    </div>
+  );
 }
 
-export default App
+export default App;
